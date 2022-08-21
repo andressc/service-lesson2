@@ -1,5 +1,5 @@
 import {Request, Response, Router} from "express";
-import {postsRepository} from "../repositories/posts-repository";
+import {postsRepository} from "../repositories/posts-repository-db";
 import {errorValidationMiddleware} from "../middlewares/error-validation-middleware";
 import {isBloggerMiddleware} from "../middlewares/is-bloger-middleware";
 import {postsValidationMiddleware} from "../middlewares/posts-validation-middleware";

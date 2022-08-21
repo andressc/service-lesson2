@@ -36,9 +36,7 @@ export const bloggersRepository = {
         return false;
     },
 
-    async createBlogger(name: string, youtubeUrl: string): Promise<number> {
-        const newBlogger = {id: +(new Date()), name, youtubeUrl};
-
+    async createBlogger(newBlogger: BloggersType): Promise<number> {
         await bloggersCollection.insertOne(newBlogger);
 
         return newBlogger.id;
