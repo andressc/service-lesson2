@@ -1,25 +1,25 @@
 import {Request, Response, Router} from "express";
-import {postsRepository} from "../repositories/posts-repository-db";
 import {errorValidationMiddleware} from "../middlewares/error-validation-middleware";
 import {postsValidationMiddleware} from "../middlewares/posts-validation-middleware";
 import {PostsType} from "../types/postsType";
 import {authorizationValidationMiddleware} from "../middlewares/authorization-validation-middleware";
+import {postsService} from "../domain/posts-service"
 
 export const postsRouter = Router({});
 
 postsRouter.get('/',
     async (req: Request, res: Response) => {
-    const posts: PostsType[] = await postsRepository.findAllPosts()
+    const posts: PostsType[] = await postsService.findAllPosts()
     res.send(posts);
 });
 
 postsRouter.get('/:id',
     async (req: Request, res: Response) => {
 
-    const [blogger]: PostsType[] = await postsRepository.findPostById(+req.params.id);
+    const post: PostsType | null = await postsService.findPostById(+req.params.id);
 
-    if(blogger) {
-        res.send(blogger);
+    if(post) {
+        res.send(post);
         return;
     }
 
@@ -34,7 +34,7 @@ postsRouter.get('/:id',
 postsRouter.delete('/:id',
     authorizationValidationMiddleware,
     async (req: Request, res: Response) => {
-    const isDeleted: boolean = await postsRepository.deletePost(+req.params.id)
+    const isDeleted: boolean = await postsService.deletePost(+req.params.id)
 
     if(isDeleted) {
         res.send(204);
@@ -50,13 +50,13 @@ postsRouter.post('/',
     errorValidationMiddleware,
     async (req: Request, res: Response) => {
 
-    const newPostId: number = await postsRepository.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId, req.body.bloggerName);
+    const newPostId: number = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId, req.body.bloggerName);
 
     if(!newPostId) {
         res.send(400);
         return
     }
-    const [testNewPost]:PostsType[] = await postsRepository.findPostById(newPostId);
+    const testNewPost: PostsType | null = await postsService.findPostById(newPostId);
     if(testNewPost) {
         res.status(201).send(testNewPost);
         return;
@@ -71,7 +71,7 @@ postsRouter.put('/:id',
     errorValidationMiddleware,
     async (req: Request, res: Response) => {
 
-    const isUpdated: boolean = await postsRepository.updatePost(+req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId, req.body.bloggerName);
+    const isUpdated: boolean = await postsService.updatePost(+req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId, req.body.bloggerName);
 
     if(isUpdated) {
         res.send(204);

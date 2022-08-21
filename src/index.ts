@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import {bloggersRouter} from "./routes/bloggers-router";
 import {postsRouter} from "./routes/posts-router";
-import {runDb} from "./repositories/db";
+import {runDb} from "./db/db";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,7 +20,3 @@ const startApp = async () => {
 }
 
 startApp()
-
-/*app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
-});*/
