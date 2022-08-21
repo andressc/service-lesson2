@@ -3,7 +3,7 @@ import {BloggersType} from "../types/bloggersType";
 import {PostsType} from "../types/postsType";
 
 
-const mongoUri = process.env.mongoURI || "mongodb+srv://admin:674511aaqq@cluster0.ry8zvtg.mongodb.net/?retryWrites=true&w=majority";
+const mongoUri = process.env.mongoURI || "mongodb+srv://admin2:674511aaqq@cluster0.ry8zvtg.mongodb.net/?retryWrites=true&w=majority";
 
 const client = new MongoClient(mongoUri);
 const db = client.db("learning")
