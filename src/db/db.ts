@@ -1,9 +1,10 @@
 import {MongoClient} from "mongodb";
 import {BloggersType} from "../types/bloggersType";
 import {PostsType} from "../types/postsType";
+import { config } from 'dotenv'
 
-
-const mongoUri = process.env.mongoURI || "mongodb+srv://admin:674511aaqq@cluster0.ry8zvtg.mongodb.net/?retryWrites=true&w=majority";
+config()
+const mongoUri = process.env.mongoURI || "mongodb://0.0.0.0/";
 
 const client = new MongoClient(mongoUri);
 const db = client.db("learning")
