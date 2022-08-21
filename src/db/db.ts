@@ -4,7 +4,7 @@ import {PostsType} from "../types/postsType";
 import { config } from 'dotenv'
 
 config()
-const mongoUri = process.env.mongoURI || "mongodb://0.0.0.0/";
+const mongoUri = process.env.mongoURI || "mongodb://0.0.0.0:19017";
 
 const client = new MongoClient(mongoUri);
 const db = client.db("learning")
