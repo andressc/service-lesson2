@@ -1,31 +1,32 @@
-import {Request, Response} from "express";
-import {NextFunction} from "express";
+import { Request, Response } from 'express';
+import { NextFunction } from 'express';
 
-export const authorizationValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authorizationValidationMiddleware = (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	const auth = req.header('authorization');
 
-    const auth = req.header('authorization');
+	if (!auth) {
+		res.send(401);
+		return;
+	}
 
-    if (!auth) {
-        res.send(401);
-        return;
-    }
+	const [name, base64] = auth.split(' ');
 
-    const [name, base64] = auth.split(' ');
+	if (name !== 'Basic') {
+		res.send(401);
+		return;
+	}
 
-    if (name !== 'Basic') {
-        res.send(401);
-        return;
-    }
+	const [login, password] = Buffer.from(base64, 'base64').toString('ascii').split(':');
 
-    const [login, password] = Buffer.from(base64, 'base64')
-        .toString('ascii')
-        .split(':');
+	if (login === 'admin' && password === 'qwerty') {
+		next();
+		return;
+	}
 
-    if (login === "admin" && password === "qwerty") {
-        next();
-        return;
-    }
-
-    res.send(401);
-    return;
-}
+	res.send(401);
+	return;
+};
