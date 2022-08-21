@@ -1,4 +1,5 @@
 import {body} from "express-validator";
+import {bloggersService} from "../domain/bloggers-service";
 
 export const postsValidationMiddleware = [
     body('title')
@@ -26,4 +27,14 @@ export const postsValidationMiddleware = [
         .withMessage("field must be a number")
         .notEmpty()
         .withMessage("must not be empty")
+        .custom(async (value, {req}) => {
+            const blogger = await bloggersService.findBloggerById(value);
+            if (!blogger) {
+                throw new Error('Blogger with that ID is not exists!');
+            }
+
+            req.body.bloggerId = blogger.id
+            req.body.bloggerName = blogger.name
+            return true;
+        })
 ]
