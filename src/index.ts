@@ -7,7 +7,6 @@ import { config } from 'dotenv';
 
 config();
 const app = express();
-console.log(app.prototype);
 
 const port = process.env.PORT || 3000;
 

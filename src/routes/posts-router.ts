@@ -4,11 +4,12 @@ import { postsValidationMiddleware } from '../middlewares/posts-validation-middl
 import { PostsType } from '../types/postsType';
 import { authorizationValidationMiddleware } from '../middlewares/authorization-validation-middleware';
 import { postsService } from '../domain/posts-service';
+import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 
 export const postsRouter = Router({});
 
-postsRouter.get('/', async (req: Request, res: Response) => {
-	const posts: PostsType[] = await postsService.findAllPosts();
+postsRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, res: Response) => {
+	const posts: PaginationType<PostsType[]> = await postsService.findAllPosts(req.query);
 	res.send(posts);
 });
 
@@ -16,17 +17,11 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
 	const post: PostsType | null = await postsService.findPostById(+req.params.id);
 
 	if (post) {
-		res.send(post);
-		return;
+		return res.send(post);
 	}
 
-	res.send(404);
+	res.sendStatus(404);
 });
-
-/*postsRouter.delete('/',
-    (req: Request, res: Response) => {
-    res.send(404);
-});*/
 
 postsRouter.delete(
 	'/:id',
@@ -35,11 +30,10 @@ postsRouter.delete(
 		const isDeleted: boolean = await postsService.deletePost(+req.params.id);
 
 		if (isDeleted) {
-			res.send(204);
-			return;
+			return res.sendStatus(204);
 		}
 
-		res.send(404);
+		return res.sendStatus(404);
 	},
 );
 
@@ -49,25 +43,13 @@ postsRouter.post(
 	...postsValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const newPostId: number = await postsService.createPost(
-			req.body.title,
-			req.body.shortDescription,
-			req.body.content,
-			req.body.bloggerId,
-			req.body.bloggerName,
-		);
+		const newPost: PostsType | null = await postsService.createPost(req.body);
 
-		if (!newPostId) {
-			res.send(400);
-			return;
-		}
-		const testNewPost: PostsType | null = await postsService.findPostById(newPostId);
-		if (testNewPost) {
-			res.status(201).send(testNewPost);
-			return;
+		if (newPost) {
+			return res.status(201).send(newPost);
 		}
 
-		res.send(400);
+		return res.sendStatus(404);
 	},
 );
 
@@ -77,20 +59,12 @@ postsRouter.put(
 	...postsValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const isUpdated: boolean = await postsService.updatePost(
-			+req.params.id,
-			req.body.title,
-			req.body.shortDescription,
-			req.body.content,
-			req.body.bloggerId,
-			req.body.bloggerName,
-		);
+		const isUpdated: boolean = await postsService.updatePost(+req.params.id, req.body);
 
 		if (isUpdated) {
-			res.send(204);
-			return;
+			return res.sendStatus(204);
 		}
 
-		res.send(404);
+		return res.sendStatus(404);
 	},
 );

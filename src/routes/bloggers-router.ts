@@ -4,11 +4,13 @@ import { errorValidationMiddleware } from '../middlewares/error-validation-middl
 import { bloggersValidationMiddleware } from '../middlewares/bloggers-validation-middleware';
 import { BloggersType } from '../types/bloggersType';
 import { authorizationValidationMiddleware } from '../middlewares/authorization-validation-middleware';
+import { PostsType } from '../types/postsType';
+import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 
 export const bloggersRouter = Router({});
 
-bloggersRouter.get('/', async (req: Request, res: Response) => {
-	const bloggers: BloggersType[] = await bloggersService.findAllBloggers();
+bloggersRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, res: Response) => {
+	const bloggers: PaginationType<BloggersType[]> = await bloggersService.findAllBloggers(req.query);
 	res.send(bloggers);
 });
 
@@ -23,9 +25,16 @@ bloggersRouter.get('/:id', async (req: Request, res: Response) => {
 	res.send(404);
 });
 
-/*bloggersRouter.delete('/', (req: Request, res: Response) => {
-    res.send(404);
-});*/
+bloggersRouter.get(
+	'/:id/posts',
+	async (req: Request<{ id: number }, {}, {}, PaginationTypeQuery>, res: Response) => {
+		const bloggerPosts: PaginationType<PostsType[]> = await bloggersService.findAllPostsBlogger(
+			req.query,
+			+req.params.id,
+		);
+		res.send(bloggerPosts);
+	},
+);
 
 bloggersRouter.delete(
 	'/:id',
@@ -61,9 +70,24 @@ bloggersRouter.post(
 	},
 );
 
-/*bloggersRouter.put('/', (req: Request, res: Response) => {
-        res.send(404);
-})*/
+bloggersRouter.post(
+	'/:id/posts',
+	authorizationValidationMiddleware,
+	...bloggersValidationMiddleware,
+	errorValidationMiddleware,
+	async (req: Request, res: Response) => {
+		const bloggersPost: PostsType | null = await bloggersService.createBloggerPost(
+			+req.params.id,
+			req.body,
+		);
+
+		if (bloggersPost) {
+			return res.status(201).send(bloggersPost);
+		}
+
+		return res.sendStatus(404);
+	},
+);
 
 bloggersRouter.put(
 	'/:id',

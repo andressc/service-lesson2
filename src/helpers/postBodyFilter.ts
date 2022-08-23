@@ -1,0 +1,12 @@
+import { PostsType } from '../types/postsType';
+
+export const postBodyFilter = (data: PostsType) => {
+	const { title, shortDescription, content, bloggerId } = data;
+
+	return {
+		title,
+		shortDescription,
+		content,
+		bloggerId,
+	};
+};

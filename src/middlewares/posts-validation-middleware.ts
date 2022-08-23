@@ -32,9 +32,6 @@ export const postsValidationMiddleware = [
 			if (!blogger) {
 				throw new Error('Blogger with that ID is not exists!');
 			}
-
-			req.body.bloggerId = blogger.id;
-			req.body.bloggerName = blogger.name;
 			return true;
 		}),
 ];

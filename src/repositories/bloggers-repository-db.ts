@@ -1,9 +1,30 @@
-import { bloggersCollection } from '../db/db';
+import { bloggersCollection, postsCollection } from '../db/db';
 import { BloggersType } from '../types/bloggersType';
+import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
+import { paginationCalc } from '../helpers/paginationCalc';
 
-export const postsRepository = {
-	async findAllBloggers(): Promise<BloggersType[]> {
-		return bloggersCollection.find({}).toArray();
+export const bloggersRepository = {
+	async findAllBloggers(query: PaginationTypeQuery): Promise<PaginationType<BloggersType[]>> {
+		const searchString = query.searchNameTerm
+			? { name: { $regex: query.searchNameTerm.toString() } }
+			: {};
+		const totalCount = await bloggersCollection.countDocuments(searchString);
+
+		const { pagesCount, page, pageSize, skip } = paginationCalc({ ...query, totalCount });
+
+		const items: BloggersType[] = await bloggersCollection
+			.find(searchString)
+			.skip(skip)
+			.limit(pageSize)
+			.toArray();
+
+		return {
+			pagesCount,
+			page,
+			pageSize,
+			totalCount,
+			items,
+		};
 	},
 
 	async findBloggerById(id: number): Promise<BloggersType | null> {
@@ -12,7 +33,8 @@ export const postsRepository = {
 		});
 
 		if (blogger) {
-			return blogger;
+			const { id, name, youtubeUrl } = blogger;
+			return { id, name, youtubeUrl };
 		}
 
 		return null;
