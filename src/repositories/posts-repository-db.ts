@@ -52,7 +52,7 @@ export const postsRepository = {
 	},
 
 	async createPost(newPost: PostsType): Promise<PostsType | null> {
-		await postsCollection.insertOne(newPost);
+		await postsCollection.insertOne({ ...newPost });
 		return newPost;
 	},
 };

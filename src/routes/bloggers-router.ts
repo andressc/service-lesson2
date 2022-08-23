@@ -33,7 +33,12 @@ bloggersRouter.get(
 			req.query,
 			+req.params.id,
 		);
-		res.send(bloggerPosts);
+
+		if(bloggerPosts.totalCount > 0) {
+			return res.send(bloggerPosts);
+		}
+
+		return res.send(404);
 	},
 );
 

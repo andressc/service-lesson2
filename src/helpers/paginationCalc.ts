@@ -1,10 +1,10 @@
 import { PaginationTypeQuery } from '../types/paginationType';
 
 export const paginationCalc = (data: PaginationTypeQuery) => {
-	let { pageNumber, pageSize, totalCount } = data;
+	const { PageNumber, PageSize, totalCount } = data;
 
-	pageNumber = +pageNumber;
-	pageSize = +pageSize;
+	let pageNumber = +PageNumber;
+	let pageSize = +PageSize;
 
 	if (!pageNumber) {
 		pageNumber = 1;

@@ -7,9 +7,9 @@ export type PaginationType<T> = {
 };
 
 export type PaginationTypeQuery = {
-	pageNumber: number;
-	pageSize: number;
+	PageNumber: number;
+	PageSize: number;
 	totalCount: number;
 	id?: number | null;
-	searchNameTerm?: number | null;
+	SearchNameTerm?: number | null;
 };

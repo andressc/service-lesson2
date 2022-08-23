@@ -5,12 +5,12 @@ import { paginationCalc } from '../helpers/paginationCalc';
 
 export const bloggersRepository = {
 	async findAllBloggers(query: PaginationTypeQuery): Promise<PaginationType<BloggersType[]>> {
-		const searchString = query.searchNameTerm
-			? { name: { $regex: query.searchNameTerm.toString() } }
+		const searchString = query.SearchNameTerm
+			? { name: { $regex: query.SearchNameTerm.toString() } }
 			: {};
 		const totalCount = await bloggersCollection.countDocuments(searchString);
 
-		const { pagesCount, page, pageSize, skip } = paginationCalc({ ...query, totalCount });
+		const { pagesCount: pagesCount, page, pageSize, skip } = paginationCalc({ ...query, totalCount });
 
 		//const items: BloggersType[] = await bloggersCollection
 		const items: any = await bloggersCollection
@@ -53,7 +53,7 @@ export const bloggersRepository = {
 	},
 
 	async createBlogger(newBlogger: BloggersType): Promise<number> {
-		await bloggersCollection.insertOne(newBlogger);
+		await bloggersCollection.insertOne({ ...newBlogger });
 		return newBlogger.id;
 	},
 };
