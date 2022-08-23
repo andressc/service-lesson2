@@ -6,6 +6,7 @@ import { BloggersType } from '../types/bloggersType';
 import { authorizationValidationMiddleware } from '../middlewares/authorization-validation-middleware';
 import { PostsType } from '../types/postsType';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
+import {postsValidationMiddleware} from "../middlewares/posts-validation-middleware";
 
 export const bloggersRouter = Router({});
 
@@ -73,7 +74,7 @@ bloggersRouter.post(
 bloggersRouter.post(
 	'/:id/posts',
 	authorizationValidationMiddleware,
-	...bloggersValidationMiddleware,
+	...postsValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
 		const bloggersPost: PostsType | null = await bloggersService.createBloggerPost(

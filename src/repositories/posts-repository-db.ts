@@ -14,20 +14,10 @@ export const postsRepository = {
 
 		const { pagesCount, page, pageSize, skip } = paginationCalc({ ...query, totalCount });
 
-		const project = {
-			_id: 0,
-			id: 1,
-			title: 1,
-			shortDescription: 1,
-			content: 1,
-			bloggerId: 1,
-			bloggerName: 1,
-		};
-
 		//const items: PostsType[] = await postsCollection
 		const items: any = await postsCollection
 			.find(searchString)
-			.project(project)
+			//.project({_id: 0})
 			.skip(skip)
 			.limit(pageSize)
 			.toArray();
