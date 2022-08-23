@@ -6,7 +6,7 @@ import { BloggersType } from '../types/bloggersType';
 import { authorizationValidationMiddleware } from '../middlewares/authorization-validation-middleware';
 import { PostsType } from '../types/postsType';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
-import {postsValidationMiddleware} from "../middlewares/posts-validation-middleware";
+import { postsValidationMiddleware } from '../middlewares/posts-validation-middleware';
 
 export const bloggersRouter = Router({});
 
@@ -34,7 +34,7 @@ bloggersRouter.get(
 			+req.params.id,
 		);
 
-		if(bloggerPosts.totalCount > 0) {
+		if (bloggerPosts.totalCount > 0) {
 			return res.send(bloggerPosts);
 		}
 

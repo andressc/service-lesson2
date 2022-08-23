@@ -1,4 +1,4 @@
-import { bloggersCollection, postsCollection } from '../db/db';
+import { bloggersCollection } from '../db/db';
 import { BloggersType } from '../types/bloggersType';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 import { paginationCalc } from '../helpers/paginationCalc';
@@ -10,33 +10,30 @@ export const bloggersRepository = {
 			: {};
 		const totalCount = await bloggersCollection.countDocuments(searchString);
 
-		const { pagesCount: pagesCount, page, pageSize, skip } = paginationCalc({ ...query, totalCount });
+		const {
+			pagesCount: pagesCount,
+			page,
+			pageSize,
+			skip,
+		} = paginationCalc({ ...query, totalCount });
 
-		//const items: BloggersType[] = await bloggersCollection
-		const items: any = await bloggersCollection
-			.find(searchString)
-			.project({_id: 0})
+		const items: BloggersType[] = await bloggersCollection
+			.find(searchString, { projection: { _id: 0 } })
 			.skip(skip)
 			.limit(pageSize)
 			.toArray();
 
-		return {
-			pagesCount,
-			page,
-			pageSize,
-			totalCount,
-			items,
-		};
+		return { pagesCount, page, pageSize, totalCount, items };
 	},
 
 	async findBloggerById(id: number): Promise<BloggersType | null> {
-		const blogger: BloggersType | null = await bloggersCollection.findOne({
-			id,
-		});
+		const blogger: BloggersType | null = await bloggersCollection.findOne(
+			{ id },
+			{ projection: { _id: 0 } },
+		);
 
 		if (blogger) {
-			const { id, name, youtubeUrl } = blogger;
-			return { id, name, youtubeUrl };
+			return blogger;
 		}
 
 		return null;

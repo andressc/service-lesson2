@@ -14,10 +14,8 @@ export const postsRepository = {
 
 		const { pagesCount, page, pageSize, skip } = paginationCalc({ ...query, totalCount });
 
-		//const items: PostsType[] = await postsCollection
-		const items: any = await postsCollection
-			.find(searchString)
-			.project({_id: 0})
+		const items: PostsType[] = await postsCollection
+			.find(searchString, { projection: { _id: 0 } })
 			.skip(skip)
 			.limit(pageSize)
 			.toArray();
@@ -32,7 +30,10 @@ export const postsRepository = {
 	},
 
 	async findPostById(id: number): Promise<PostsType | null> {
-		const post: PostsType | null = await postsCollection.findOne({ id });
+		const post: PostsType | null = await postsCollection.findOne(
+			{ id },
+			{ projection: { _id: 0 } },
+		);
 
 		if (post) {
 			return post;

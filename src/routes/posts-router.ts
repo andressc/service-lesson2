@@ -5,7 +5,7 @@ import { PostsType } from '../types/postsType';
 import { authorizationValidationMiddleware } from '../middlewares/authorization-validation-middleware';
 import { postsService } from '../domain/posts-service';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
-import {bloggerIdValidationMiddleware} from "../middlewares/blogger-id-validation-middleware";
+import { bloggerIdValidationMiddleware } from '../middlewares/blogger-id-validation-middleware';
 
 export const postsRouter = Router({});
 

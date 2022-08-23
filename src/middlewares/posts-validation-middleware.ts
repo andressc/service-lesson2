@@ -19,5 +19,5 @@ export const postsValidationMiddleware = [
 		.isLength({ max: 1000 })
 		.withMessage('maximum 1000 characters')
 		.notEmpty()
-		.withMessage('must not be empty')
+		.withMessage('must not be empty'),
 ];
