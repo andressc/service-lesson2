@@ -67,7 +67,7 @@ bloggersRouter.post(
 			return;
 		}
 
-		res.send(400);
+		res.send(404);
 	},
 );
 

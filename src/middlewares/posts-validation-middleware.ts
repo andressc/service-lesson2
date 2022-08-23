@@ -1,5 +1,4 @@
 import { body } from 'express-validator';
-import { bloggersService } from '../domain/bloggers-service';
 
 export const postsValidationMiddleware = [
 	body('title')
@@ -20,18 +19,5 @@ export const postsValidationMiddleware = [
 		.isLength({ max: 1000 })
 		.withMessage('maximum 1000 characters')
 		.notEmpty()
-		.withMessage('must not be empty'),
-
-	body('bloggerId')
-		.isNumeric()
-		.withMessage('field must be a number')
-		.notEmpty()
 		.withMessage('must not be empty')
-		.custom(async (value, { req }) => {
-			const blogger = await bloggersService.findBloggerById(value);
-			if (!blogger) {
-				throw new Error('Blogger with that ID is not exists!');
-			}
-			return true;
-		}),
 ];

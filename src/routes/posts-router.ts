@@ -5,6 +5,7 @@ import { PostsType } from '../types/postsType';
 import { authorizationValidationMiddleware } from '../middlewares/authorization-validation-middleware';
 import { postsService } from '../domain/posts-service';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
+import {bloggerIdValidationMiddleware} from "../middlewares/blogger-id-validation-middleware";
 
 export const postsRouter = Router({});
 
@@ -41,6 +42,7 @@ postsRouter.post(
 	'/',
 	authorizationValidationMiddleware,
 	...postsValidationMiddleware,
+	...bloggerIdValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
 		const newPost: PostsType | null = await postsService.createPost(req.body);
@@ -57,6 +59,7 @@ postsRouter.put(
 	'/:id',
 	authorizationValidationMiddleware,
 	...postsValidationMiddleware,
+	...bloggerIdValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
 		const isUpdated: boolean = await postsService.updatePost(+req.params.id, req.body);
