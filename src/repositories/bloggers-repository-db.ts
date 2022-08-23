@@ -12,8 +12,10 @@ export const bloggersRepository = {
 
 		const { pagesCount, page, pageSize, skip } = paginationCalc({ ...query, totalCount });
 
-		const items: BloggersType[] = await bloggersCollection
+		//const items: BloggersType[] = await bloggersCollection
+		const items: any = await bloggersCollection
 			.find(searchString)
+			.project({_id: 0})
 			.skip(skip)
 			.limit(pageSize)
 			.toArray();

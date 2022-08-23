@@ -17,7 +17,7 @@ export const postsRepository = {
 		//const items: PostsType[] = await postsCollection
 		const items: any = await postsCollection
 			.find(searchString)
-			//.project({_id: 0})
+			.project({_id: 0})
 			.skip(skip)
 			.limit(pageSize)
 			.toArray();
