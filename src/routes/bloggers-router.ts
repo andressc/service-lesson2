@@ -16,7 +16,7 @@ bloggersRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, re
 });
 
 bloggersRouter.get('/:id', async (req: Request, res: Response) => {
-	const blogger: BloggersType | null = await bloggersService.findBloggerById(+req.params.id);
+	const blogger: BloggersType | null = await bloggersService.findBloggerById(req.params.id);
 
 	if (blogger) {
 		return res.send(blogger);
@@ -27,10 +27,10 @@ bloggersRouter.get('/:id', async (req: Request, res: Response) => {
 
 bloggersRouter.get(
 	'/:id/posts',
-	async (req: Request<{ id: number }, {}, {}, PaginationTypeQuery>, res: Response) => {
+	async (req: Request<{ id: string }, {}, {}, PaginationTypeQuery>, res: Response) => {
 		const bloggerPosts: PaginationType<PostsType[]> = await bloggersService.findAllPostsBlogger(
 			req.query,
-			+req.params.id,
+			req.params.id,
 		);
 
 		if (bloggerPosts.totalCount > 0) {
@@ -45,7 +45,7 @@ bloggersRouter.delete(
 	'/:id',
 	basicAuthorizationValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const isDeleted: boolean = await bloggersService.deleteBlogger(+req.params.id);
+		const isDeleted: boolean = await bloggersService.deleteBlogger(req.params.id);
 		if (isDeleted) {
 			return res.send(204);
 		}
@@ -80,7 +80,7 @@ bloggersRouter.post(
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
 		const bloggersPost: PostsType | null = await bloggersService.createBloggerPost(
-			+req.params.id,
+			req.params.id,
 			req.body,
 		);
 
@@ -99,7 +99,7 @@ bloggersRouter.put(
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
 		const isUpdated: boolean = await bloggersService.updateBlogger(
-			+req.params.id,
+			req.params.id,
 			req.body.name,
 			req.body.youtubeUrl,
 		);

@@ -1,8 +1,8 @@
 export type PostsType = {
-	id: number;
+	id: string;
 	title: string;
 	shortDescription: string;
 	content: string;
-	bloggerId: number;
+	bloggerId: string;
 	bloggerName: string;
 };

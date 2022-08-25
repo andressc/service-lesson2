@@ -6,7 +6,7 @@ import { paginationCalc } from '../helpers/paginationCalc';
 export const postsRepository = {
 	async findAllPosts(
 		query: PaginationTypeQuery,
-		id: number | null,
+		id: string | null,
 	): Promise<PaginationType<PostsType[]>> {
 		const searchString = id ? { bloggerId: id } : {};
 
@@ -29,7 +29,7 @@ export const postsRepository = {
 		};
 	},
 
-	async findPostById(id: number): Promise<PostsType | null> {
+	async findPostById(id: string): Promise<PostsType | null> {
 		const post: PostsType | null = await postsCollection.findOne(
 			{ id },
 			{ projection: { _id: 0 } },
@@ -42,7 +42,7 @@ export const postsRepository = {
 		return null;
 	},
 
-	async deletePost(id: number): Promise<boolean> {
+	async deletePost(id: string): Promise<boolean> {
 		const result = await postsCollection.deleteOne({ id });
 		return result.deletedCount === 1;
 	},
@@ -52,7 +52,7 @@ export const postsRepository = {
 		return result.deletedCount === 1;
 	},
 
-	async updatePost(id: number, updateData: PostsType): Promise<boolean> {
+	async updatePost(id: string, updateData: PostsType): Promise<boolean> {
 		const result = await postsCollection.updateOne({ id }, { $set: updateData });
 		return result.matchedCount === 1;
 	},

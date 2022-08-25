@@ -13,20 +13,20 @@ export const bloggersService = {
 
 	async findAllPostsBlogger(
 		query: PaginationTypeQuery,
-		id: number | null = null,
+		id: string | null = null,
 	): Promise<PaginationType<PostsType[]>> {
 		return postsRepository.findAllPosts(query, id);
 	},
 
-	async findBloggerById(id: number): Promise<BloggersType | null> {
+	async findBloggerById(id: string): Promise<BloggersType | null> {
 		return bloggersRepository.findBloggerById(id);
 	},
 
-	async deleteBlogger(id: number): Promise<boolean> {
+	async deleteBlogger(id: string): Promise<boolean> {
 		return await bloggersRepository.deleteBlogger(id);
 	},
 
-	async updateBlogger(id: number, name: string, youtubeUrl: string): Promise<boolean> {
+	async updateBlogger(id: string, name: string, youtubeUrl: string): Promise<boolean> {
 		return await bloggersRepository.updateBlogger(id, name, youtubeUrl);
 	},
 
@@ -36,8 +36,8 @@ export const bloggersService = {
 		return await bloggersRepository.createBlogger(newBlogger);
 	},
 
-	async createBloggerPost(id: number, body: PostsType): Promise<PostsType | null> {
-		const blogger: BloggersType | null = await bloggersService.findBloggerById(id);
+	async createBloggerPost(id: string, body: PostsType): Promise<PostsType | null> {
+		const blogger = await bloggersService.findBloggerById(id);
 		if (!blogger) {
 			return null;
 		}

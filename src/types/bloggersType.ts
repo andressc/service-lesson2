@@ -1,5 +1,5 @@
 export type BloggersType = {
-	id: number;
+	id: string;
 	name: string;
 	youtubeUrl: string;
 };

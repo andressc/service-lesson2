@@ -1,21 +1,20 @@
 import { Request, Response, Router } from 'express';
 import { errorValidationMiddleware } from '../middlewares/error-validation-middleware';
 import { postsValidationMiddleware } from '../middlewares/posts-validation-middleware';
-import { PostsType } from '../types/postsType';
 import { basicAuthorizationValidationMiddleware } from '../middlewares/basic-authorization-validation-middleware';
 import { postsService } from '../domain/posts-service';
-import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
+import { PaginationTypeQuery } from '../types/paginationType';
 import { bloggerIdValidationMiddleware } from '../middlewares/blogger-id-validation-middleware';
 
 export const postsRouter = Router({});
 
 postsRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, res: Response) => {
-	const posts: PaginationType<PostsType[]> = await postsService.findAllPosts(req.query);
+	const posts = await postsService.findAllPosts(req.query);
 	res.send(posts);
 });
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
-	const post: PostsType | null = await postsService.findPostById(+req.params.id);
+	const post = await postsService.findPostById(req.params.id);
 
 	if (post) {
 		return res.send(post);
@@ -28,7 +27,7 @@ postsRouter.delete(
 	'/:id',
 	basicAuthorizationValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const isDeleted: boolean = await postsService.deletePost(+req.params.id);
+		const isDeleted = await postsService.deletePost(req.params.id);
 
 		if (isDeleted) {
 			return res.sendStatus(204);
@@ -45,7 +44,7 @@ postsRouter.post(
 	...bloggerIdValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const newPost: PostsType | null = await postsService.createPost(req.body);
+		const newPost = await postsService.createPost(req.body);
 
 		if (newPost) {
 			return res.status(201).send(newPost);
@@ -62,7 +61,7 @@ postsRouter.put(
 	...bloggerIdValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const isUpdated: boolean = await postsService.updatePost(+req.params.id, req.body);
+		const isUpdated = await postsService.updatePost(req.params.id, req.body);
 
 		if (isUpdated) {
 			return res.sendStatus(204);

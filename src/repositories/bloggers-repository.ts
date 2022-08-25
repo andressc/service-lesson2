@@ -26,7 +26,7 @@ export const bloggersRepository = {
 		return { pagesCount, page, pageSize, totalCount, items };
 	},
 
-	async findBloggerById(id: number): Promise<BloggersType | null> {
+	async findBloggerById(id: string): Promise<BloggersType | null> {
 		const blogger: BloggersType | null = await bloggersCollection.findOne(
 			{ id },
 			{ projection: { _id: 0 } },
@@ -39,7 +39,7 @@ export const bloggersRepository = {
 		return null;
 	},
 
-	async deleteBlogger(id: number): Promise<boolean> {
+	async deleteBlogger(id: string): Promise<boolean> {
 		const result = await bloggersCollection.deleteOne({ id });
 		return result.deletedCount === 1;
 	},
@@ -49,7 +49,7 @@ export const bloggersRepository = {
 		return result.deletedCount === 1;
 	},
 
-	async updateBlogger(id: number, name: string, youtubeUrl: string): Promise<boolean> {
+	async updateBlogger(id: string, name: string, youtubeUrl: string): Promise<boolean> {
 		const result = await bloggersCollection.updateOne({ id }, { $set: { name, youtubeUrl } });
 		return result.matchedCount === 1;
 	},
