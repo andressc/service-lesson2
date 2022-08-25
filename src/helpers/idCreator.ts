@@ -1,3 +1,3 @@
 export const idCreator = () => {
-	return +new Date();
+	return new Date().toString();
 };

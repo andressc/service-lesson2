@@ -1,5 +1,5 @@
 import { PostsType } from '../types/postsType';
-import { postsRepository } from '../repositories/posts-repository-db';
+import { postsRepository } from '../repositories/posts-repository';
 import { BloggersType } from '../types/bloggersType';
 import { bloggersService } from './bloggers-service';
 import { idCreator } from '../helpers/idCreator';

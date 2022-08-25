@@ -1,6 +1,8 @@
 import { MongoClient } from 'mongodb';
 import { BloggersType } from '../types/bloggersType';
 import { PostsType } from '../types/postsType';
+import { UsersType } from '../types/usersType';
+import { CommentsType } from '../types/commentsType';
 import { config } from 'dotenv';
 
 config();
@@ -8,8 +10,11 @@ const mongoUri = process.env.mongoURI || 'mongodb://0.0.0.0:19017';
 
 const client = new MongoClient(mongoUri);
 const db = client.db('learning');
+
 export const bloggersCollection = db.collection<BloggersType>('bloggers');
 export const postsCollection = db.collection<PostsType>('posts');
+export const usersCollection = db.collection<UsersType>('users');
+export const commentsCollection = db.collection<CommentsType>('users');
 
 export const runDb = async () => {
 	try {

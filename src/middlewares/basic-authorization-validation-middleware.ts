@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { NextFunction } from 'express';
 
-export const authorizationValidationMiddleware = (
+export const basicAuthorizationValidationMiddleware = (
 	req: Request,
 	res: Response,
 	next: NextFunction,

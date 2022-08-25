@@ -1,74 +1,64 @@
 import { PostsType } from '../types/postsType';
-
-const posts: PostsType[] = [
-	{
-		id: 0,
-		title: 'hello',
-		shortDescription: 'Short',
-		content: 'Long description post',
-		bloggerId: 1,
-		bloggerName: 'IT-INCUBATOR',
-	},
-];
+import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
+import { postsCollection } from '../db/db';
+import { paginationCalc } from '../helpers/paginationCalc';
 
 export const postsRepository = {
-	async findAllPosts(): Promise<PostsType[]> {
-		return posts;
+	async findAllPosts(
+		query: PaginationTypeQuery,
+		id: number | null,
+	): Promise<PaginationType<PostsType[]>> {
+		const searchString = id ? { bloggerId: id } : {};
+
+		const totalCount = await postsCollection.countDocuments(searchString);
+
+		const { pagesCount, page, pageSize, skip } = paginationCalc({ ...query, totalCount });
+
+		const items: PostsType[] = await postsCollection
+			.find(searchString, { projection: { _id: 0 } })
+			.skip(skip)
+			.limit(pageSize)
+			.toArray();
+
+		return {
+			pagesCount,
+			page,
+			pageSize,
+			totalCount,
+			items,
+		};
 	},
 
-	async findPostById(id: number): Promise<PostsType[]> {
-		return posts.filter((v) => v.id === id);
+	async findPostById(id: number): Promise<PostsType | null> {
+		const post: PostsType | null = await postsCollection.findOne(
+			{ id },
+			{ projection: { _id: 0 } },
+		);
+
+		if (post) {
+			return post;
+		}
+
+		return null;
 	},
 
 	async deletePost(id: number): Promise<boolean> {
-		for (let i = 0; i < posts.length; i++) {
-			if (posts[i].id === id) {
-				posts.splice(i, 1);
-				return true;
-			}
-		}
-
-		return false;
+		const result = await postsCollection.deleteOne({ id });
+		return result.deletedCount === 1;
 	},
 
-	async updatePost(
-		id: number,
-		title: string,
-		shortDescription: string,
-		content: string,
-		bloggerId: number,
-		bloggerName: string,
-	): Promise<boolean> {
-		const post = posts.find((v) => v.id === id);
-		if (post) {
-			post.title = title;
-			post.shortDescription = shortDescription;
-			post.content = content;
-			post.bloggerId = bloggerId;
-			post.bloggerName = bloggerName;
-			return true;
-		}
-
-		return false;
+	async deleteAllPosts(): Promise<boolean> {
+		const result = await postsCollection.deleteMany({});
+		return result.deletedCount === 1;
 	},
 
-	async createPost(
-		title: string,
-		shortDescription: string,
-		content: string,
-		bloggerId: number,
-		bloggerName: string,
-	): Promise<number> {
-		const newPost = {
-			id: +new Date(),
-			title,
-			shortDescription,
-			content,
-			bloggerId,
-			bloggerName,
-		};
+	async updatePost(id: number, updateData: PostsType): Promise<boolean> {
+		const result = await postsCollection.updateOne({ id }, { $set: updateData });
+		return result.matchedCount === 1;
+	},
 
-		posts.push(newPost);
-		return newPost.id;
+	async createPost(newPost: PostsType): Promise<PostsType | null> {
+		await postsCollection.insertOne({ ...newPost });
+		return newPost;
 	},
 };

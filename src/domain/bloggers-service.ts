@@ -1,8 +1,8 @@
-import { bloggersRepository } from '../repositories/bloggers-repository-db';
+import { bloggersRepository } from '../repositories/bloggers-repository';
 import { BloggersType } from '../types/bloggersType';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 import { PostsType } from '../types/postsType';
-import { postsRepository } from '../repositories/posts-repository-db';
+import { postsRepository } from '../repositories/posts-repository';
 import { idCreator } from '../helpers/idCreator';
 import { postBodyFilter } from '../helpers/postBodyFilter';
 
@@ -30,8 +30,8 @@ export const bloggersService = {
 		return await bloggersRepository.updateBlogger(id, name, youtubeUrl);
 	},
 
-	async createBlogger(name: string, youtubeUrl: string): Promise<number> {
-		const newBlogger = { id: +new Date(), name, youtubeUrl };
+	async createBlogger(name: string, youtubeUrl: string): Promise<BloggersType> {
+		const newBlogger = { id: idCreator(), name, youtubeUrl };
 
 		return await bloggersRepository.createBlogger(newBlogger);
 	},

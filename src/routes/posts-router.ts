@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { errorValidationMiddleware } from '../middlewares/error-validation-middleware';
 import { postsValidationMiddleware } from '../middlewares/posts-validation-middleware';
 import { PostsType } from '../types/postsType';
-import { authorizationValidationMiddleware } from '../middlewares/authorization-validation-middleware';
+import { basicAuthorizationValidationMiddleware } from '../middlewares/basic-authorization-validation-middleware';
 import { postsService } from '../domain/posts-service';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 import { bloggerIdValidationMiddleware } from '../middlewares/blogger-id-validation-middleware';
@@ -26,7 +26,7 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
 
 postsRouter.delete(
 	'/:id',
-	authorizationValidationMiddleware,
+	basicAuthorizationValidationMiddleware,
 	async (req: Request, res: Response) => {
 		const isDeleted: boolean = await postsService.deletePost(+req.params.id);
 
@@ -40,7 +40,7 @@ postsRouter.delete(
 
 postsRouter.post(
 	'/',
-	authorizationValidationMiddleware,
+	basicAuthorizationValidationMiddleware,
 	...postsValidationMiddleware,
 	...bloggerIdValidationMiddleware,
 	errorValidationMiddleware,
@@ -57,7 +57,7 @@ postsRouter.post(
 
 postsRouter.put(
 	'/:id',
-	authorizationValidationMiddleware,
+	basicAuthorizationValidationMiddleware,
 	...postsValidationMiddleware,
 	...bloggerIdValidationMiddleware,
 	errorValidationMiddleware,

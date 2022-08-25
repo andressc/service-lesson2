@@ -3,7 +3,7 @@ import { bloggersService } from '../domain/bloggers-service';
 import { errorValidationMiddleware } from '../middlewares/error-validation-middleware';
 import { bloggersValidationMiddleware } from '../middlewares/bloggers-validation-middleware';
 import { BloggersType } from '../types/bloggersType';
-import { authorizationValidationMiddleware } from '../middlewares/authorization-validation-middleware';
+import { basicAuthorizationValidationMiddleware } from '../middlewares/basic-authorization-validation-middleware';
 import { PostsType } from '../types/postsType';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 import { postsValidationMiddleware } from '../middlewares/posts-validation-middleware';
@@ -19,11 +19,10 @@ bloggersRouter.get('/:id', async (req: Request, res: Response) => {
 	const blogger: BloggersType | null = await bloggersService.findBloggerById(+req.params.id);
 
 	if (blogger) {
-		res.send(blogger);
-		return;
+		return res.send(blogger);
 	}
 
-	res.send(404);
+	return res.sendStatus(404);
 });
 
 bloggersRouter.get(
@@ -38,47 +37,45 @@ bloggersRouter.get(
 			return res.send(bloggerPosts);
 		}
 
-		return res.send(404);
+		return res.sendStatus(404);
 	},
 );
 
 bloggersRouter.delete(
 	'/:id',
-	authorizationValidationMiddleware,
+	basicAuthorizationValidationMiddleware,
 	async (req: Request, res: Response) => {
 		const isDeleted: boolean = await bloggersService.deleteBlogger(+req.params.id);
 		if (isDeleted) {
-			res.send(204);
-			return;
+			return res.send(204);
 		}
 
-		res.send(404);
+		return res.sendStatus(404);
 	},
 );
 
 bloggersRouter.post(
 	'/',
-	authorizationValidationMiddleware,
+	basicAuthorizationValidationMiddleware,
 	...bloggersValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const newBloggerId: number = await bloggersService.createBlogger(
+		const blogger: BloggersType = await bloggersService.createBlogger(
 			req.body.name,
 			req.body.youtubeUrl,
 		);
-		const testNewBlogger: BloggersType | null = await bloggersService.findBloggerById(newBloggerId);
-		if (testNewBlogger) {
-			res.status(201).send(testNewBlogger);
-			return;
+
+		if (blogger) {
+			return res.status(201).send(blogger);
 		}
 
-		res.send(404);
+		return res.sendStatus(404);
 	},
 );
 
 bloggersRouter.post(
 	'/:id/posts',
-	authorizationValidationMiddleware,
+	basicAuthorizationValidationMiddleware,
 	...postsValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
@@ -97,7 +94,7 @@ bloggersRouter.post(
 
 bloggersRouter.put(
 	'/:id',
-	authorizationValidationMiddleware,
+	basicAuthorizationValidationMiddleware,
 	...bloggersValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
@@ -107,10 +104,9 @@ bloggersRouter.put(
 			req.body.youtubeUrl,
 		);
 		if (isUpdated) {
-			res.send(204);
-			return;
+			return res.send(204);
 		}
 
-		res.send(404);
+		res.sendStatus(404);
 	},
 );
