@@ -36,7 +36,8 @@ export const commentsRepository = {
 		);
 
 		if (comment) {
-			return comment;
+			const { id, content, userId, userLogin, addedAt } = comment;
+			return { id, content, userId, userLogin, addedAt };
 		}
 
 		return null;
