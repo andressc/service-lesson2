@@ -7,7 +7,7 @@ import { errorValidationMiddleware } from '../middlewares/error-validation-middl
 export const authRouter = Router({});
 
 authRouter.post(
-	'/',
+	'/login',
 	...authValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
