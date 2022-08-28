@@ -9,6 +9,10 @@ export const usersService = {
 		return usersRepository.findAllUsers(query);
 	},
 
+	async findUserById(id: string): Promise<UsersType | null> {
+		return usersRepository.findUserById(id);
+	},
+
 	async createUser(login: string, password: string): Promise<{ id: string; login: string } | null> {
 		const passwordSalt = await bcrypt.genSalt(10);
 		const passwordHash = await this._generateHash(password, passwordSalt);

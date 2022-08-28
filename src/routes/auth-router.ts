@@ -21,11 +21,11 @@ authRouter.post(
 );
 
 authRouter.post('/test', async (req: Request, res: Response) => {
-	const test = await jwtService.verifyToken(req.body.token);
+	const test = await jwtService.getUserAuthByToken(req.body.token);
 
 	console.log(test);
 	if (test) {
-		return res.send(test.toString());
+		return res.send(test);
 	}
 	return res.sendStatus(401);
 });

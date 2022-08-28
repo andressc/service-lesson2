@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+
 export const idCreator = () => {
-	return new Date().toString();
+	return new ObjectId().toString()
 };

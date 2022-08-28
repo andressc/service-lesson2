@@ -12,6 +12,16 @@ usersRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, res: 
 	res.send(bloggers);
 });
 
+usersRouter.get('/:id', async (req: Request, res: Response) => {
+	const user = await usersService.findUserById(req.params.id);
+
+	if (user) {
+		return res.send(user);
+	}
+
+	res.sendStatus(404);
+});
+
 usersRouter.delete(
 	'/:id',
 	basicAuthorizationValidationMiddleware,
