@@ -32,12 +32,11 @@ export const commentsRepository = {
 	async findCommentById(id: string): Promise<CommentsType | null> {
 		const comment: CommentsType | null = await commentsCollection.findOne(
 			{ id },
-			{ projection: { _id: 0 } },
+			{ projection: { _id: 0, postId: 0 } },
 		);
 
 		if (comment) {
-			const { id, content, userId, userLogin, addedAt } = comment;
-			return { id, content, userId, userLogin, addedAt };
+			return comment;
 		}
 
 		return null;

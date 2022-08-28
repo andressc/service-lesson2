@@ -19,8 +19,13 @@ export const postsService = {
 
 	async findAllCommentsOfPost(
 		query: PaginationTypeQuery,
-		id: string | null = null,
-	): Promise<PaginationType<CommentsType[]>> {
+		id: string,
+	): Promise<PaginationType<CommentsType[]> | boolean> {
+		const post = await postsService.findPostById(id);
+		if (!post) {
+			return false;
+		}
+
 		return commentsRepository.findAllComments(query, id);
 	},
 

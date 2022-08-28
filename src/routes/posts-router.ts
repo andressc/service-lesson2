@@ -19,12 +19,12 @@ postsRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, res: 
 postsRouter.get(
 	'/:id/comments',
 	async (req: Request<{ id: string }, {}, {}, PaginationTypeQuery>, res: Response) => {
-		const commentsOnPost: PaginationType<CommentsType[]> = await postsService.findAllCommentsOfPost(
+		const commentsOnPost: PaginationType<CommentsType[]> | boolean = await postsService.findAllCommentsOfPost(
 			req.query,
 			req.params.id,
 		);
 
-		if (commentsOnPost.totalCount > 0) {
+		if (commentsOnPost) {
 			return res.send(commentsOnPost);
 		}
 
