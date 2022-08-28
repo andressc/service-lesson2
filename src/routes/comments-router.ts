@@ -40,7 +40,6 @@ commentsRouter.put(
 	...commentsValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request<{ id: string }, {}, CommentsType, {}>, res: Response) => {
-
 		const isUpdated = await commentsService.updateComment(req.params.id, req.body, req!.user);
 
 		if (isUpdated === HttpStatusCode.FORBIDDEN) {

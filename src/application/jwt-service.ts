@@ -3,7 +3,7 @@ import { UsersType } from '../types/usersType';
 
 export const jwtService = {
 	async createJWT(user: UsersType) {
-		return jwt.sign({userId: user.id}, '56ytuhbvcw4rhe6rtcvjuoiporeesfh', {
+		return jwt.sign({ userId: user.id }, '56ytuhbvcw4rhe6rtcvjuoiporeesfh', {
 			expiresIn: '1h',
 		});
 	},

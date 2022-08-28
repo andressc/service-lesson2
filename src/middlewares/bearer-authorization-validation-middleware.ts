@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { NextFunction } from 'express';
-import {jwtService} from "../application/jwt-service";
-import {usersService} from "../domain/users-service";
+import { jwtService } from '../application/jwt-service';
+import { usersService } from '../domain/users-service';
 
-export const bearerAuthorizationValidationMiddleware = async(
+export const bearerAuthorizationValidationMiddleware = async (
 	req: Request,
 	res: Response,
 	next: NextFunction,
@@ -23,8 +23,8 @@ export const bearerAuthorizationValidationMiddleware = async(
 	const authUserId = await jwtService.getUserAuthByToken(token);
 
 	if (authUserId) {
-		req.user = await usersService.findUserById(authUserId.userId)
-		return next()
+		req.user = await usersService.findUserById(authUserId.userId);
+		return next();
 	}
 
 	return res.sendStatus(401);

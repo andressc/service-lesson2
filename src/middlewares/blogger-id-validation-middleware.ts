@@ -3,8 +3,8 @@ import { bloggersService } from '../domain/bloggers-service';
 
 export const bloggerIdValidationMiddleware = [
 	body('bloggerId')
-		.isNumeric()
-		.withMessage('field must be a number')
+		.isString()
+		.withMessage('field must be a string')
 		.notEmpty()
 		.withMessage('must not be empty')
 		.custom(async (value) => {

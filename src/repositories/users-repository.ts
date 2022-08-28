@@ -1,4 +1,4 @@
-import { usersCollection} from '../db/db';
+import { usersCollection } from '../db/db';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 import { paginationCalc } from '../helpers/paginationCalc';
 import { UsersType } from '../types/usersType';
