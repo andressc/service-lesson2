@@ -18,22 +18,6 @@ commentsRouter.get('/:id', async (req: Request, res: Response) => {
 	res.sendStatus(404);
 });
 
-commentsRouter.post(
-	'/',
-	bearerAuthorizationValidationMiddleware,
-	...commentsValidationMiddleware,
-	errorValidationMiddleware,
-	async (req: Request, res: Response) => {
-		const newComment = await commentsService.createComment(req.body.content, req!.user);
-
-		if (newComment) {
-			return res.status(201).send(newComment);
-		}
-
-		return res.sendStatus(404);
-	},
-);
-
 commentsRouter.put(
 	'/:id',
 	bearerAuthorizationValidationMiddleware,

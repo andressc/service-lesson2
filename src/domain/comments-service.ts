@@ -1,8 +1,6 @@
 import { CommentsType } from '../types/commentsType';
 import { commentsRepository } from '../repositories/comments-repository';
-import { idCreator } from '../helpers/idCreator';
 import { UsersType } from '../types/usersType';
-import { usersService } from './users-service';
 import { HttpStatusCode } from '../types/StatusCode';
 
 export const commentsService = {
@@ -47,26 +45,5 @@ export const commentsService = {
 		}
 
 		return await commentsRepository.updateComment(id, body.content);
-	},
-
-	async createComment(content: string, authUser: null | UsersType) {
-		if (!authUser) {
-			return null;
-		}
-
-		const user = await usersService.findUserById(authUser.id);
-		if (!user) {
-			return null;
-		}
-
-		const newComment: CommentsType = {
-			id: idCreator(),
-			content,
-			userId: user.id,
-			userLogin: user.login,
-			addedAt: new Date().toISOString(),
-		};
-
-		return await commentsRepository.createComment(newComment);
 	},
 };

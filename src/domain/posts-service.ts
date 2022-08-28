@@ -4,6 +4,10 @@ import { bloggersService } from './bloggers-service';
 import { idCreator } from '../helpers/idCreator';
 import { postBodyFilter } from '../helpers/postBodyFilter';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
+import { UsersType } from '../types/usersType';
+import { usersService } from './users-service';
+import { CommentsType } from '../types/commentsType';
+import { commentsRepository } from '../repositories/comments-repository';
 
 export const postsService = {
 	async findAllPosts(
@@ -11,6 +15,13 @@ export const postsService = {
 		id: string | null = null,
 	): Promise<PaginationType<PostsType[]>> {
 		return postsRepository.findAllPosts(query, id);
+	},
+
+	async findAllCommentsOfPost(
+		query: PaginationTypeQuery,
+		id: string | null = null,
+	): Promise<PaginationType<CommentsType[]>> {
+		return commentsRepository.findAllComments(query, id);
 	},
 
 	async findPostById(id: string): Promise<PostsType | null> {
@@ -45,5 +56,32 @@ export const postsService = {
 			...postBodyFilter(body),
 			bloggerName: blogger.name,
 		});
+	},
+
+	async createCommentPost(content: string, authUser: null | UsersType, postId: string) {
+		if (!authUser) {
+			return null;
+		}
+
+		const user = await usersService.findUserById(authUser.id);
+		if (!user) {
+			return null;
+		}
+
+		const post = await postsService.findPostById(postId);
+		if (!post) {
+			return null;
+		}
+
+		const newComment: CommentsType = {
+			id: idCreator(),
+			content,
+			userId: user.id,
+			userLogin: user.login,
+			postId: post.id,
+			addedAt: new Date().toISOString(),
+		};
+
+		return await commentsRepository.createComment(newComment);
 	},
 };
