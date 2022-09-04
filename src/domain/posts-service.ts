@@ -11,17 +11,7 @@ import { commentsRepository } from '../repositories/comments-repository';
 import { paginationCalc } from '../helpers/paginationCalc';
 
 export const postsService = {
-	async findAllPosts(query: PaginationTypeQuery): Promise<PostsType[]> {
-		const searchString = {};
-
-		const totalCount = await postsRepository.countPostData(searchString);
-
-		const data = paginationCalc({ ...query, totalCount });
-
-		return await postsRepository.findAllPosts(data, searchString);
-	},
-
-	async findAllBloggersPosts(
+	async findAllPosts(
 		query: PaginationTypeQuery,
 		id: string | null = null,
 	): Promise<PaginationType<PostsType[]>> {
@@ -31,7 +21,7 @@ export const postsService = {
 
 		const data = paginationCalc({ ...query, totalCount });
 
-		return await postsRepository.findAllBloggersPosts(data, searchString);
+		return await postsRepository.findAllPosts(data, searchString);
 	},
 
 	/*async findAllCommentsOfPost(

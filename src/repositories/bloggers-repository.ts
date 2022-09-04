@@ -1,15 +1,26 @@
 import { bloggersCollection } from '../db/db';
 import { BloggersType } from '../types/bloggersType';
-import { PaginationCalc } from '../types/paginationType';
+import { PaginationCalc, PaginationType } from '../types/paginationType';
 
 export const bloggersRepository = {
-	async findAllBloggers(data: PaginationCalc, searchString: {}): Promise<BloggersType[]> {
-		return await bloggersCollection
-			.find(searchString, { projection: { _id: 0 } })
+	async findAllBloggers(
+		data: PaginationCalc,
+		searchString: {},
+	): Promise<PaginationType<BloggersType[]>> {
+		const items: BloggersType[] = await bloggersCollection
+			.find(searchString, { projection: { _id: 0, passwordHash: 0 } })
 			.skip(data.skip)
 			.limit(data.pageSize)
 			.sort(data.sortBy)
 			.toArray();
+
+		return {
+			pagesCount: data.pagesCount,
+			page: data.pageNumber,
+			pageSize: data.pageSize,
+			totalCount: data.totalCount,
+			items,
+		};
 	},
 
 	async findBloggerById(id: string): Promise<BloggersType | null> {

@@ -53,7 +53,7 @@ export const usersRepository = {
 	},
 
 	async findByLogin(login: string, password: string): Promise<UsersType | null> {
-		return await usersCollection.findOne({ login, password });
+		return await usersCollection.findOne({ login, passwordHash: password });
 	},
 
 	async countUserData(search: {}): Promise<number> {

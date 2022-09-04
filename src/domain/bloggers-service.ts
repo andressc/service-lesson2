@@ -9,7 +9,7 @@ import { paginationCalc } from '../helpers/paginationCalc';
 import { postsService } from './posts-service';
 
 export const bloggersService = {
-	async findAllBloggers(query: PaginationTypeQuery): Promise<BloggersType[]> {
+	async findAllBloggers(query: PaginationTypeQuery): Promise<PaginationType<BloggersType[]>> {
 		const searchString = query.searchNameTerm
 			? { name: { $regex: query.searchNameTerm.toString() } }
 			: {};
@@ -25,7 +25,7 @@ export const bloggersService = {
 		query: PaginationTypeQuery,
 		id: string | null = null,
 	): Promise<PaginationType<PostsType[]>> {
-		return postsService.findAllBloggersPosts(query, id);
+		return postsService.findAllPosts(query, id);
 	},
 
 	async findBloggerById(id: string): Promise<BloggersType | null> {
