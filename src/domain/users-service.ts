@@ -3,23 +3,41 @@ import { usersRepository } from '../repositories/users-repository';
 import bcrypt from 'bcrypt';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 import { UsersType } from '../types/usersType';
+import { paginationCalc } from '../helpers/paginationCalc';
 
 export const usersService = {
 	async findAllUsers(query: PaginationTypeQuery): Promise<PaginationType<UsersType[]>> {
-		return usersRepository.findAllUsers(query);
+		const search: { login?: {}; email?: {} } = {};
+		query.searchLoginTerm ? (search.login = { $regex: query.searchLoginTerm.toString() }) : {};
+		query.searchEmailTerm ? (search.email = { $regex: query.searchEmailTerm.toString() }) : {};
+		const searchString = { ...search };
+
+		console.log(searchString);
+
+		const totalCount = await usersRepository.countUserData(searchString);
+
+		const data = paginationCalc({ ...query, totalCount });
+
+		return usersRepository.findAllUsers(data, searchString);
 	},
 
 	async findUserById(id: string): Promise<UsersType | null> {
 		return usersRepository.findUserById(id);
 	},
 
-	async createUser(login: string, password: string): Promise<{ id: string; login: string } | null> {
+	async createUser(
+		login: string,
+		password: string,
+		email: string,
+	): Promise<{ id: string; login: string; email: string; createdAt: string } | null> {
 		const passwordSalt = await bcrypt.genSalt(10);
 		const passwordHash = await this._generateHash(password, passwordSalt);
 
 		const newUser = {
 			id: idCreator(),
 			login,
+			email,
+			createdAt: new Date().toISOString(),
 			passwordHash,
 		};
 		return await usersRepository.createUser(newUser);

@@ -1,10 +1,12 @@
 import { PaginationTypeQuery } from '../types/paginationType';
 
 export const paginationCalc = (data: PaginationTypeQuery) => {
-	const { PageNumber, PageSize, totalCount } = data;
+	const sortDirection = data.sortDirection === 'Asc' ? 1 : -1;
+	const sortBy = data.sortBy ? { [data.sortBy]: sortDirection } : { createdAt: sortDirection };
 
-	let pageNumber = +PageNumber;
-	let pageSize = +PageSize;
+	let pageNumber = +data.pageNumber;
+	let pageSize = +data.pageSize;
+	let totalCount = +data.totalCount;
 
 	if (!pageNumber) {
 		pageNumber = 1;
@@ -17,5 +19,5 @@ export const paginationCalc = (data: PaginationTypeQuery) => {
 	const skip = (pageNumber - 1) * pageSize;
 	const pagesCount = Math.ceil(totalCount / pageSize);
 
-	return { pagesCount, page: pageNumber, pageSize: pageSize, skip };
+	return { pagesCount, pageNumber, pageSize, skip, sortBy, totalCount };
 };

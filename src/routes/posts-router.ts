@@ -3,11 +3,10 @@ import { errorValidationMiddleware } from '../middlewares/error-validation-middl
 import { postsValidationMiddleware } from '../middlewares/posts-validation-middleware';
 import { basicAuthorizationValidationMiddleware } from '../middlewares/basic-authorization-validation-middleware';
 import { postsService } from '../domain/posts-service';
-import {PaginationType, PaginationTypeQuery} from '../types/paginationType';
+import { PaginationTypeQuery } from '../types/paginationType';
 import { bloggerIdValidationMiddleware } from '../middlewares/blogger-id-validation-middleware';
 import { bearerAuthorizationValidationMiddleware } from '../middlewares/bearer-authorization-validation-middleware';
 import { commentsValidationMiddleware } from '../middlewares/comments-validation-middleware';
-import {CommentsType} from "../types/commentsType";
 
 export const postsRouter = Router({});
 
@@ -16,13 +15,11 @@ postsRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, res: 
 	res.send(posts);
 });
 
-postsRouter.get(
+/*postsRouter.get(
 	'/:id/comments',
 	async (req: Request<{ id: string }, {}, {}, PaginationTypeQuery>, res: Response) => {
-		const commentsOnPost: PaginationType<CommentsType[]> | boolean = await postsService.findAllCommentsOfPost(
-			req.query,
-			req.params.id,
-		);
+		const commentsOnPost: PaginationType<CommentsType[]> | boolean =
+			await postsService.findAllCommentsOfPost(req.query, req.params.id);
 
 		if (commentsOnPost) {
 			return res.send(commentsOnPost);
@@ -30,7 +27,7 @@ postsRouter.get(
 
 		return res.sendStatus(404);
 	},
-);
+);*/
 
 postsRouter.get('/:id', async (req: Request, res: Response) => {
 	const post = await postsService.findPostById(req.params.id);

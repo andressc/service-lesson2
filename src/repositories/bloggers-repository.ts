@@ -1,29 +1,15 @@
 import { bloggersCollection } from '../db/db';
 import { BloggersType } from '../types/bloggersType';
-import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
-import { paginationCalc } from '../helpers/paginationCalc';
+import { PaginationCalc } from '../types/paginationType';
 
 export const bloggersRepository = {
-	async findAllBloggers(query: PaginationTypeQuery): Promise<PaginationType<BloggersType[]>> {
-		const searchString = query.SearchNameTerm
-			? { name: { $regex: query.SearchNameTerm.toString() } }
-			: {};
-		const totalCount = await bloggersCollection.countDocuments(searchString);
-
-		const {
-			pagesCount: pagesCount,
-			page,
-			pageSize,
-			skip,
-		} = paginationCalc({ ...query, totalCount });
-
-		const items: BloggersType[] = await bloggersCollection
+	async findAllBloggers(data: PaginationCalc, searchString: {}): Promise<BloggersType[]> {
+		return await bloggersCollection
 			.find(searchString, { projection: { _id: 0 } })
-			.skip(skip)
-			.limit(pageSize)
+			.skip(data.skip)
+			.limit(data.pageSize)
+			.sort(data.sortBy)
 			.toArray();
-
-		return { pagesCount, page, pageSize, totalCount, items };
 	},
 
 	async findBloggerById(id: string): Promise<BloggersType | null> {
@@ -39,7 +25,7 @@ export const bloggersRepository = {
 		return null;
 	},
 
-	async deleteBlogger(id: string): Promise<boolean> {
+	async deleteBlogger(id: string) {
 		const result = await bloggersCollection.deleteOne({ id });
 		return result.deletedCount === 1;
 	},
@@ -49,13 +35,17 @@ export const bloggersRepository = {
 		return result.deletedCount === 1;
 	},
 
-	async updateBlogger(id: string, name: string, youtubeUrl: string): Promise<boolean> {
+	async updateBlogger(id: string, name: string, youtubeUrl: string) {
 		const result = await bloggersCollection.updateOne({ id }, { $set: { name, youtubeUrl } });
 		return result.matchedCount === 1;
 	},
 
-	async createBlogger(newBlogger: BloggersType): Promise<BloggersType> {
+	async createBlogger(newBlogger: BloggersType) {
 		await bloggersCollection.insertOne({ ...newBlogger });
 		return newBlogger;
+	},
+
+	async countBloggerData(search: {}): Promise<number> {
+		return await bloggersCollection.countDocuments(search);
 	},
 };

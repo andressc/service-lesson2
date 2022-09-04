@@ -1,30 +1,33 @@
 import { PostsType } from '../types/postsType';
-import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
+import { PaginationCalc, PaginationType } from '../types/paginationType';
 import { postsCollection } from '../db/db';
-import { paginationCalc } from '../helpers/paginationCalc';
 
 export const postsRepository = {
-	async findAllPosts(
-		query: PaginationTypeQuery,
-		id: string | null,
+	async findAllPosts(data: PaginationCalc, searchString: {}): Promise<PostsType[]> {
+		return await postsCollection
+			.find(searchString, { projection: { _id: 0 } })
+			.skip(data.skip)
+			.limit(data.pageSize)
+			.sort(data.sortBy)
+			.toArray();
+	},
+
+	async findAllBloggersPosts(
+		data: PaginationCalc,
+		searchString: {},
 	): Promise<PaginationType<PostsType[]>> {
-		const searchString = id ? { bloggerId: id } : {};
-
-		const totalCount = await postsCollection.countDocuments(searchString);
-
-		const { pagesCount, page, pageSize, skip } = paginationCalc({ ...query, totalCount });
-
 		const items: PostsType[] = await postsCollection
 			.find(searchString, { projection: { _id: 0 } })
-			.skip(skip)
-			.limit(pageSize)
+			.skip(data.skip)
+			.limit(data.pageSize)
+			.sort(data.sortBy)
 			.toArray();
 
 		return {
-			pagesCount,
-			page,
-			pageSize,
-			totalCount,
+			pagesCount: data.pagesCount,
+			page: data.pageNumber,
+			pageSize: data.pageSize,
+			totalCount: data.totalCount,
 			items,
 		};
 	},
@@ -60,5 +63,9 @@ export const postsRepository = {
 	async createPost(newPost: PostsType): Promise<PostsType | null> {
 		await postsCollection.insertOne({ ...newPost });
 		return newPost;
+	},
+
+	async countPostData(search: {}): Promise<number> {
+		return await postsCollection.countDocuments(search);
 	},
 };

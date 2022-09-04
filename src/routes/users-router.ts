@@ -41,7 +41,7 @@ usersRouter.post(
 	...usersValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const user = await usersService.createUser(req.body.login, req.body.password);
+		const user = await usersService.createUser(req.body.login, req.body.password, req.body.email);
 		return res.status(201).send(user);
 	},
 );

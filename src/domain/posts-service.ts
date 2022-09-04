@@ -8,16 +8,33 @@ import { UsersType } from '../types/usersType';
 import { usersService } from './users-service';
 import { CommentsType } from '../types/commentsType';
 import { commentsRepository } from '../repositories/comments-repository';
+import { paginationCalc } from '../helpers/paginationCalc';
 
 export const postsService = {
-	async findAllPosts(
+	async findAllPosts(query: PaginationTypeQuery): Promise<PostsType[]> {
+		const searchString = {};
+
+		const totalCount = await postsRepository.countPostData(searchString);
+
+		const data = paginationCalc({ ...query, totalCount });
+
+		return await postsRepository.findAllPosts(data, searchString);
+	},
+
+	async findAllBloggersPosts(
 		query: PaginationTypeQuery,
 		id: string | null = null,
 	): Promise<PaginationType<PostsType[]>> {
-		return postsRepository.findAllPosts(query, id);
+		const searchString = id ? { bloggerId: id } : {};
+
+		const totalCount = await postsRepository.countPostData(searchString);
+
+		const data = paginationCalc({ ...query, totalCount });
+
+		return await postsRepository.findAllBloggersPosts(data, searchString);
 	},
 
-	async findAllCommentsOfPost(
+	/*async findAllCommentsOfPost(
 		query: PaginationTypeQuery,
 		id: string,
 	): Promise<PaginationType<CommentsType[]> | boolean> {
@@ -27,7 +44,7 @@ export const postsService = {
 		}
 
 		return commentsRepository.findAllComments(query, id);
-	},
+	},*/
 
 	async findPostById(id: string): Promise<PostsType | null> {
 		return postsRepository.findPostById(id);
@@ -47,6 +64,7 @@ export const postsService = {
 			id, //подумать
 			...postBodyFilter(body),
 			bloggerName: blogger.name,
+			createdAt: new Date().toISOString(),
 		});
 	},
 
@@ -60,6 +78,7 @@ export const postsService = {
 			id: idCreator(),
 			...postBodyFilter(body),
 			bloggerName: blogger.name,
+			createdAt: new Date().toISOString(),
 		});
 	},
 

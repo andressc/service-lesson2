@@ -1,21 +1,31 @@
-import { bloggersRepository } from '../repositories/bloggers-repository';
 import { BloggersType } from '../types/bloggersType';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 import { PostsType } from '../types/postsType';
 import { postsRepository } from '../repositories/posts-repository';
 import { idCreator } from '../helpers/idCreator';
 import { postBodyFilter } from '../helpers/postBodyFilter';
+import { bloggersRepository } from '../repositories/bloggers-repository';
+import { paginationCalc } from '../helpers/paginationCalc';
+import { postsService } from './posts-service';
 
 export const bloggersService = {
-	async findAllBloggers(query: PaginationTypeQuery): Promise<PaginationType<BloggersType[]>> {
-		return bloggersRepository.findAllBloggers(query);
+	async findAllBloggers(query: PaginationTypeQuery): Promise<BloggersType[]> {
+		const searchString = query.searchNameTerm
+			? { name: { $regex: query.searchNameTerm.toString() } }
+			: {};
+
+		const totalCount = await bloggersRepository.countBloggerData(searchString);
+
+		const data = paginationCalc({ ...query, totalCount });
+
+		return await bloggersRepository.findAllBloggers(data, searchString);
 	},
 
 	async findAllPostsBlogger(
 		query: PaginationTypeQuery,
 		id: string | null = null,
 	): Promise<PaginationType<PostsType[]>> {
-		return postsRepository.findAllPosts(query, id);
+		return postsService.findAllBloggersPosts(query, id);
 	},
 
 	async findBloggerById(id: string): Promise<BloggersType | null> {
@@ -31,7 +41,7 @@ export const bloggersService = {
 	},
 
 	async createBlogger(name: string, youtubeUrl: string): Promise<BloggersType> {
-		const newBlogger = { id: idCreator(), name, youtubeUrl };
+		const newBlogger = { id: idCreator(), name, youtubeUrl, createdAt: new Date().toISOString() };
 
 		return await bloggersRepository.createBlogger(newBlogger);
 	},
@@ -47,6 +57,7 @@ export const bloggersService = {
 			...postBodyFilter(body),
 			bloggerId: blogger.id,
 			bloggerName: blogger.name,
+			createdAt: new Date().toISOString(),
 		});
 	},
 };

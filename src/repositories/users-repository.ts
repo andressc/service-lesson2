@@ -1,26 +1,23 @@
 import { usersCollection } from '../db/db';
-import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
-import { paginationCalc } from '../helpers/paginationCalc';
+import { PaginationCalc, PaginationType } from '../types/paginationType';
 import { UsersType } from '../types/usersType';
 
 export const usersRepository = {
-	async findAllUsers(query: PaginationTypeQuery): Promise<PaginationType<UsersType[]>> {
-		const totalCount = await usersCollection.countDocuments({});
-
-		const {
-			pagesCount: pagesCount,
-			page,
-			pageSize,
-			skip,
-		} = paginationCalc({ ...query, totalCount });
-
+	async findAllUsers(data: PaginationCalc, searchString: {}): Promise<PaginationType<UsersType[]>> {
 		const items: UsersType[] = await usersCollection
-			.find({}, { projection: { _id: 0, passwordHash: 0 } })
-			.skip(skip)
-			.limit(pageSize)
+			.find(searchString, { projection: { _id: 0, passwordHash: 0 } })
+			.skip(data.skip)
+			.limit(data.pageSize)
+			.sort(data.sortBy)
 			.toArray();
 
-		return { pagesCount, page, pageSize, totalCount, items };
+		return {
+			pagesCount: data.pagesCount,
+			page: data.pageNumber,
+			pageSize: data.pageSize,
+			totalCount: data.totalCount,
+			items,
+		};
 	},
 
 	async findUserById(id: string): Promise<UsersType | null> {
@@ -41,14 +38,25 @@ export const usersRepository = {
 		return result.deletedCount === 1;
 	},
 
-	async createUser(newUser: UsersType): Promise<{ id: string; login: string }> {
+	async deleteAllUsers(): Promise<boolean> {
+		const result = await usersCollection.deleteMany({});
+		return result.deletedCount === 1;
+	},
+
+	async createUser(
+		newUser: UsersType,
+	): Promise<{ id: string; login: string; email: string; createdAt: string }> {
 		await usersCollection.insertOne({ ...newUser });
 
-		const { id, login } = newUser;
-		return { id, login };
+		const { id, login, email, createdAt } = newUser;
+		return { id, login, email, createdAt };
 	},
 
 	async findByLogin(login: string): Promise<UsersType | null> {
 		return await usersCollection.findOne({ login });
+	},
+
+	async countUserData(search: {}): Promise<number> {
+		return await usersCollection.countDocuments(search);
 	},
 };

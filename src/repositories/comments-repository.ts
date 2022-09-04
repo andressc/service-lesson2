@@ -1,10 +1,8 @@
-import {commentsCollection} from '../db/db';
+import { commentsCollection } from '../db/db';
 import { CommentsType } from '../types/commentsType';
-import {PaginationType, PaginationTypeQuery} from "../types/paginationType";
-import {paginationCalc} from "../helpers/paginationCalc";
 
 export const commentsRepository = {
-	async findAllComments(
+	/*async findAllComments(
 		query: PaginationTypeQuery,
 		id: string | null,
 	): Promise<PaginationType<CommentsType[]>> {
@@ -27,7 +25,7 @@ export const commentsRepository = {
 			totalCount,
 			items,
 		};
-	},
+	},*/
 
 	async findCommentById(id: string): Promise<CommentsType | null> {
 		const comment: CommentsType | null = await commentsCollection.findOne(
@@ -58,5 +56,9 @@ export const commentsRepository = {
 		const { id, content, userId, userLogin, addedAt } = newComment;
 
 		return { id, content, userId, userLogin, addedAt };
+	},
+
+	async countCommentsData(search: {}): Promise<number> {
+		return await commentsCollection.countDocuments(search);
 	},
 };

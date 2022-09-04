@@ -11,11 +11,7 @@ export const commentsService = {
 	async deleteComment(id: string, authUser: null | UsersType): Promise<boolean | HttpStatusCode> {
 		const deletedComment = await commentsRepository.findCommentById(id);
 
-		if (!deletedComment) {
-			return false;
-		}
-
-		if (!authUser) {
+		if (!deletedComment || !authUser) {
 			return false;
 		}
 

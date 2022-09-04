@@ -11,7 +11,7 @@ import { postsValidationMiddleware } from '../middlewares/posts-validation-middl
 export const bloggersRouter = Router({});
 
 bloggersRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, res: Response) => {
-	const bloggers: PaginationType<BloggersType[]> = await bloggersService.findAllBloggers(req.query);
+	const bloggers: BloggersType[] = await bloggersService.findAllBloggers(req.query);
 	res.send(bloggers);
 });
 
