@@ -10,16 +10,17 @@ export const usersService = {
 		let searchString = {};
 
 		const searchLoginTerm = query.searchLoginTerm
-			? { login: { $regex: query.searchLoginTerm.toString(), $options: 'i' } }
+			? { login: { $regex: query.searchLoginTerm, $options: 'i' } }
 			: null;
 		const searchEmailTerm = query.searchEmailTerm
-			? { email: { $regex: query.searchEmailTerm.toString(), $options: 'i' } }
+			? { email: { $regex: query.searchEmailTerm, $options: 'i' } }
 			: null;
 
-		if (searchLoginTerm && searchEmailTerm)
-			searchString = { $or: [{ searchLoginTerm }, searchEmailTerm] };
 		if (searchLoginTerm) searchString = searchLoginTerm;
 		if (searchEmailTerm) searchString = searchEmailTerm;
+
+		if (searchLoginTerm && searchEmailTerm)
+			searchString = { $or: [searchLoginTerm, searchEmailTerm] };
 
 		const totalCount = await usersRepository.countUserData(searchString);
 
