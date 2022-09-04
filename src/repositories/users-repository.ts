@@ -52,8 +52,8 @@ export const usersRepository = {
 		return { id, login, email, createdAt };
 	},
 
-	async findByLogin(login: string, password: string, email: string): Promise<UsersType | null> {
-		return await usersCollection.findOne({ $or: [{ login }, { email }], passwordHash: password });
+	async findByLogin(login: string, email: string): Promise<UsersType | null> {
+		return await usersCollection.findOne({ $or: [{ login }, { email }]});
 	},
 
 	async countUserData(search: {}): Promise<number> {

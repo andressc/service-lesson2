@@ -38,15 +38,15 @@ export const usersService = {
 		password: string,
 		email: string,
 	): Promise<{ id: string; login: string; email: string; createdAt: string } | null> {
-		//const passwordSalt = await bcrypt.genSalt(10);
-		//const passwordHash = await this._generateHash(password, passwordSalt);
+		const passwordSalt = await bcrypt.genSalt(10);
+		const passwordHash = await this._generateHash(password, passwordSalt);
 
 		const newUser = {
 			id: idCreator(),
 			login,
 			email,
 			createdAt: new Date().toISOString(),
-			passwordHash: password,
+			passwordHash: passwordHash,
 		};
 		return await usersRepository.createUser(newUser);
 	},
@@ -59,23 +59,21 @@ export const usersService = {
 		login: string,
 		password: string,
 		email: string,
-	): Promise<UsersType | null> {
-		const user = await usersRepository.findByLogin(login, password, email);
+	): Promise<boolean> {
+		const user = await usersRepository.findByLogin(login, email);
 		if (!user) {
-			return null;
+			return false;
 		}
 
-		/*const passwordHashSalt = user.passwordHash.split('$');
+		const passwordHashSalt = user.passwordHash.split('$');
 		const passwordSalt = `$${passwordHashSalt[1]}$${
 			passwordHashSalt[2]
 		}$${passwordHashSalt[3].slice(0, 22)}`;
 		const passwordHash = await this._generateHash(password, passwordSalt);
 
-		if (user.passwordHash !== passwordHash) {
-			return null;
-		}*/
+		return user.passwordHash === passwordHash;
 
-		return user;
+
 	},
 
 	async _generateHash(password: string, salt: string) {
