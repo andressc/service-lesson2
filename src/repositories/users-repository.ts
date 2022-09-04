@@ -53,7 +53,7 @@ export const usersRepository = {
 	},
 
 	async findByLogin(login: string, password: string, email: string): Promise<UsersType | null> {
-		return await usersCollection.findOne({ $or: [{login}, {email}], passwordHash: password });
+		return await usersCollection.findOne({ $or: [{ login }, { email }], passwordHash: password });
 	},
 
 	async countUserData(search: {}): Promise<number> {
