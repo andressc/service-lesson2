@@ -48,7 +48,7 @@ export const usersService = {
 	},
 
 	async checkCredentials(login: string, password: string): Promise<UsersType | null> {
-		const user = await usersRepository.findByLogin(login);
+		const user = await usersRepository.findByLogin(login, password);
 		if (!user) {
 			return null;
 		}
