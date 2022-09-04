@@ -15,7 +15,7 @@ authRouter.post(
 		if (user) {
 			//const token = await jwtService.createJWT(user);
 			//return res.status(200).send({ token });
-			return res.sendStatus(204)
+			return res.sendStatus(204);
 		}
 		return res.sendStatus(401);
 	},
