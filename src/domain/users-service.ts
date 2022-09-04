@@ -7,12 +7,17 @@ import { paginationCalc } from '../helpers/paginationCalc';
 
 export const usersService = {
 	async findAllUsers(query: PaginationTypeQuery): Promise<PaginationType<UsersType[]>> {
-		const search: { login?: {}; email?: {} } = {};
-		query.searchLoginTerm ? (search.login = { $regex: query.searchLoginTerm.toString(), $options : 'i' }) : {};
-		query.searchEmailTerm ? (search.email = { $regex: query.searchEmailTerm.toString(), $options : 'i' }) : {};
-		const searchString = { ...search };
 
-		console.log(searchString);
+		let searchString = {}
+
+		const search: { login?: {}; email?: {} } = {};
+		query.searchLoginTerm ? (search.login = { $regex: query.searchLoginTerm.toString(), $options : 'i' }) : null;
+		query.searchEmailTerm ? (search.email = { $regex: query.searchEmailTerm.toString(), $options : 'i' }) : null;
+
+		if(search.login && search.login) searchString = { $or : [search.login, search.email] };
+		if(search.login) searchString = search.login
+		if(search.email) searchString = search.email
+
 
 		const totalCount = await usersRepository.countUserData(searchString);
 
@@ -47,8 +52,8 @@ export const usersService = {
 		return await usersRepository.deleteUser(id);
 	},
 
-	async checkCredentials(login: string, password: string): Promise<UsersType | null> {
-		const user = await usersRepository.findByLogin(login, password);
+	async checkCredentials(login: string, password: string, email: string): Promise<UsersType | null> {
+		const user = await usersRepository.findByLogin(login, password, email);
 		if (!user) {
 			return null;
 		}
