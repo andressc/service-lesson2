@@ -11,7 +11,7 @@ import { postsService } from './posts-service';
 export const bloggersService = {
 	async findAllBloggers(query: PaginationTypeQuery): Promise<PaginationType<BloggersType[]>> {
 		const searchString = query.searchNameTerm
-			? { name: { $regex: query.searchNameTerm.toString() } }
+			? { name: { $regex: query.searchNameTerm, $options : 'i' } }
 			: {};
 
 		const totalCount = await bloggersRepository.countBloggerData(searchString);

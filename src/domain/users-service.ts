@@ -8,8 +8,8 @@ import { paginationCalc } from '../helpers/paginationCalc';
 export const usersService = {
 	async findAllUsers(query: PaginationTypeQuery): Promise<PaginationType<UsersType[]>> {
 		const search: { login?: {}; email?: {} } = {};
-		query.searchLoginTerm ? (search.login = { $regex: query.searchLoginTerm.toString() }) : {};
-		query.searchEmailTerm ? (search.email = { $regex: query.searchEmailTerm.toString() }) : {};
+		query.searchLoginTerm ? (search.login = { $regex: query.searchLoginTerm.toString(), $options : 'i' }) : {};
+		query.searchEmailTerm ? (search.email = { $regex: query.searchEmailTerm.toString(), $options : 'i' }) : {};
 		const searchString = { ...search };
 
 		console.log(searchString);

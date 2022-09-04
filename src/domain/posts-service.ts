@@ -54,7 +54,6 @@ export const postsService = {
 			id, //подумать
 			...postBodyFilter(body),
 			bloggerName: blogger.name,
-			createdAt: new Date().toISOString(),
 		});
 	},
 

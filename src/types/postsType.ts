@@ -5,5 +5,5 @@ export type PostsType = {
 	content: string;
 	bloggerId: string;
 	bloggerName: string;
-	createdAt: string;
+	createdAt?: string;
 };
