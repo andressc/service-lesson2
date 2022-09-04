@@ -1,4 +1,4 @@
-import { usersCollection } from '../db/db';
+import {usersCollection, usersCollection2} from '../db/db';
 import { PaginationCalc, PaginationType } from '../types/paginationType';
 import { UsersType } from '../types/usersType';
 
@@ -47,6 +47,7 @@ export const usersRepository = {
 		newUser: UsersType,
 	): Promise<{ id: string; login: string; email: string; createdAt: string }> {
 		await usersCollection.insertOne({ ...newUser });
+		await usersCollection2.insertOne({ ...newUser });
 
 		const { id, login, email, createdAt } = newUser;
 		return { id, login, email, createdAt };
