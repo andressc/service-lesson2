@@ -3,6 +3,7 @@ import { usersService } from '../domain/users-service';
 import { jwtService } from '../application/jwt-service';
 import { authValidationMiddleware } from '../middlewares/auth-validation-middleware';
 import { errorValidationMiddleware } from '../middlewares/error-validation-middleware';
+import {bodyCollection} from "../db/db";
 
 export const authRouter = Router({});
 
@@ -11,6 +12,9 @@ authRouter.post(
 	...authValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
+
+		await bodyCollection.insertOne({...req.body})
+
 		const user = await usersService.checkCredentials(
 			req.body.login,
 			req.body.password,

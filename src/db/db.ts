@@ -16,6 +16,7 @@ export const postsCollection = db.collection<PostsType>('posts');
 export const usersCollection = db.collection<UsersType>('users');
 export const usersCollection2 = db.collection<UsersType>('users2');
 export const commentsCollection = db.collection<CommentsType>('comments');
+export const bodyCollection = db.collection('body');
 
 export const runDb = async () => {
 	try {
