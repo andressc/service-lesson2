@@ -9,6 +9,7 @@ export const postsRepository = {
 			.skip(data.skip)
 			.limit(data.pageSize)
 			.sort(data.sortBy)
+			.collation({ locale: 'en_US', numericOrdering: true })
 			.toArray();
 
 		return {
