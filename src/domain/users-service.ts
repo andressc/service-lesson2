@@ -55,14 +55,10 @@ export const usersService = {
 		return await usersRepository.deleteUser(id);
 	},
 
-	async checkCredentials(
-		login: string,
-		password: string,
-		email: string,
-	): Promise<boolean> {
-		const user = await usersRepository.findByLogin(login, email);
+	async checkCredentials(login: string, password: string): Promise<UsersType | null> {
+		const user = await usersRepository.findByLogin(login);
 		if (!user) {
-			return false;
+			return null;
 		}
 
 		const passwordHashSalt = user.passwordHash.split('$');
@@ -71,9 +67,11 @@ export const usersService = {
 		}$${passwordHashSalt[3].slice(0, 22)}`;
 		const passwordHash = await this._generateHash(password, passwordSalt);
 
-		return user.passwordHash === passwordHash;
+		if (user.passwordHash !== passwordHash) {
+			return null;
+		}
 
-
+		return user;
 	},
 
 	async _generateHash(password: string, salt: string) {

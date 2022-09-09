@@ -4,5 +4,5 @@ export type CommentsType = {
 	userId: string;
 	userLogin: string;
 	postId?: string;
-	addedAt: string;
+	createdAt: string;
 };

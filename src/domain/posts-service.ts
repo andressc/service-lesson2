@@ -1,6 +1,6 @@
 import { PostsType } from '../types/postsType';
 import { postsRepository } from '../repositories/posts-repository';
-import { bloggersService } from './bloggers-service';
+import { blogsService } from './blogs-service';
 import { idCreator } from '../helpers/idCreator';
 import { postBodyFilter } from '../helpers/postBodyFilter';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
@@ -15,7 +15,7 @@ export const postsService = {
 		query: PaginationTypeQuery,
 		id: string | null = null,
 	): Promise<PaginationType<PostsType[]>> {
-		const searchString = id ? { bloggerId: id } : {};
+		const searchString = id ? { blogId: id } : {};
 
 		const totalCount = await postsRepository.countPostData(searchString);
 
@@ -24,17 +24,19 @@ export const postsService = {
 		return await postsRepository.findAllPosts(data, searchString);
 	},
 
-	/*async findAllCommentsOfPost(
+	async findAllCommentsOfPost(
 		query: PaginationTypeQuery,
 		id: string,
 	): Promise<PaginationType<CommentsType[]> | boolean> {
-		const post = await postsService.findPostById(id);
-		if (!post) {
-			return false;
-		}
 
-		return commentsRepository.findAllComments(query, id);
-	},*/
+		const searchString = { postId: id }
+
+		const totalCount = await commentsRepository.countCommentsData(searchString);
+
+		const data = paginationCalc({ ...query, totalCount });
+
+		return commentsRepository.findAllComments(data, searchString);
+	},
 
 	async findPostById(id: string): Promise<PostsType | null> {
 		return postsRepository.findPostById(id);
@@ -45,28 +47,28 @@ export const postsService = {
 	},
 
 	async updatePost(id: string, body: PostsType): Promise<boolean> {
-		const blogger = await bloggersService.findBloggerById(body.bloggerId);
-		if (!blogger) {
+		const blog = await blogsService.findBlogById(body.blogId);
+		if (!blog) {
 			return false;
 		}
 
 		return await postsRepository.updatePost(id, {
 			id, //подумать
 			...postBodyFilter(body),
-			bloggerName: blogger.name,
+			blogName: blog.name,
 		});
 	},
 
 	async createPost(body: PostsType): Promise<PostsType | null> {
-		const blogger = await bloggersService.findBloggerById(body.bloggerId);
-		if (!blogger) {
+		const blog = await blogsService.findBlogById(body.blogId);
+		if (!blog) {
 			return null;
 		}
 
 		return await postsRepository.createPost({
 			id: idCreator(),
 			...postBodyFilter(body),
-			bloggerName: blogger.name,
+			blogName: blog.name,
 			createdAt: new Date().toISOString(),
 		});
 	},
@@ -92,7 +94,7 @@ export const postsService = {
 			userId: user.id,
 			userLogin: user.login,
 			postId: post.id,
-			addedAt: new Date().toISOString(),
+			createdAt: new Date().toISOString(),
 		};
 
 		return await commentsRepository.createComment(newComment);

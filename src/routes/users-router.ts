@@ -8,8 +8,8 @@ import { errorValidationMiddleware } from '../middlewares/error-validation-middl
 export const usersRouter = Router({});
 
 usersRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, res: Response) => {
-	const bloggers = await usersService.findAllUsers(req.query);
-	res.send(bloggers);
+	const blogs = await usersService.findAllUsers(req.query);
+	res.send(blogs);
 });
 
 usersRouter.get('/:id', async (req: Request, res: Response) => {

@@ -3,7 +3,7 @@ export type PostsType = {
 	title: string;
 	shortDescription: string;
 	content: string;
-	bloggerId: string;
-	bloggerName: string;
+	blogId: string;
+	blogName: string;
 	createdAt?: string;
 };

@@ -1,51 +1,51 @@
 import { Request, Response, Router } from 'express';
-import { bloggersService } from '../domain/bloggers-service';
+import { blogsService } from '../domain/blogs-service';
 import { errorValidationMiddleware } from '../middlewares/error-validation-middleware';
-import { bloggersValidationMiddleware } from '../middlewares/bloggers-validation-middleware';
-import { BloggersType } from '../types/bloggersType';
+import { blogsValidationMiddleware } from '../middlewares/blogs-validation-middleware';
+import { BlogsType } from '../types/blogsType';
 import { basicAuthorizationValidationMiddleware } from '../middlewares/basic-authorization-validation-middleware';
 import { PostsType } from '../types/postsType';
 import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 import { postsValidationMiddleware } from '../middlewares/posts-validation-middleware';
 
-export const bloggersRouter = Router({});
+export const blogsRouter = Router({});
 
-bloggersRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, res: Response) => {
-	const bloggers = await bloggersService.findAllBloggers(req.query);
-	res.send(bloggers);
+blogsRouter.get('/', async (req: Request<{}, {}, {}, PaginationTypeQuery>, res: Response) => {
+	const blogs = await blogsService.findAllBlogs(req.query);
+	res.send(blogs);
 });
 
-bloggersRouter.get('/:id', async (req: Request, res: Response) => {
-	const blogger: BloggersType | null = await bloggersService.findBloggerById(req.params.id);
+blogsRouter.get('/:id', async (req: Request, res: Response) => {
+	const blog: BlogsType | null = await blogsService.findBlogById(req.params.id);
 
-	if (blogger) {
-		return res.send(blogger);
+	if (blog) {
+		return res.send(blog);
 	}
 
 	return res.sendStatus(404);
 });
 
-bloggersRouter.get(
+blogsRouter.get(
 	'/:id/posts',
 	async (req: Request<{ id: string }, {}, {}, PaginationTypeQuery>, res: Response) => {
-		const bloggerPosts: PaginationType<PostsType[]> = await bloggersService.findAllPostsBlogger(
+		const blogPosts: PaginationType<PostsType[]> = await blogsService.findAllPostsBlog(
 			req.query,
 			req.params.id,
 		);
 
-		if (bloggerPosts.totalCount > 0) {
-			return res.send(bloggerPosts);
+		if (blogPosts.totalCount > 0) {
+			return res.send(blogPosts);
 		}
 
 		return res.sendStatus(404);
 	},
 );
 
-bloggersRouter.delete(
+blogsRouter.delete(
 	'/:id',
 	basicAuthorizationValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const isDeleted: boolean = await bloggersService.deleteBlogger(req.params.id);
+		const isDeleted: boolean = await blogsService.deleteBlog(req.params.id);
 		if (isDeleted) {
 			return res.send(204);
 		}
@@ -54,51 +54,51 @@ bloggersRouter.delete(
 	},
 );
 
-bloggersRouter.post(
+blogsRouter.post(
 	'/',
 	basicAuthorizationValidationMiddleware,
-	...bloggersValidationMiddleware,
+	...blogsValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const blogger: BloggersType = await bloggersService.createBlogger(
+		const blog: BlogsType = await blogsService.createBlog(
 			req.body.name,
 			req.body.youtubeUrl,
 		);
 
-		if (blogger) {
-			return res.status(201).send(blogger);
+		if (blog) {
+			return res.status(201).send(blog);
 		}
 
 		return res.sendStatus(404);
 	},
 );
 
-bloggersRouter.post(
+blogsRouter.post(
 	'/:id/posts',
 	basicAuthorizationValidationMiddleware,
 	...postsValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const bloggersPost: PostsType | null = await bloggersService.createBloggerPost(
+		const blogsPost: PostsType | null = await blogsService.createBlogPost(
 			req.params.id,
 			req.body,
 		);
 
-		if (bloggersPost) {
-			return res.status(201).send(bloggersPost);
+		if (blogsPost) {
+			return res.status(201).send(blogsPost);
 		}
 
 		return res.sendStatus(404);
 	},
 );
 
-bloggersRouter.put(
+blogsRouter.put(
 	'/:id',
 	basicAuthorizationValidationMiddleware,
-	...bloggersValidationMiddleware,
+	...blogsValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const isUpdated: boolean = await bloggersService.updateBlogger(
+		const isUpdated: boolean = await blogsService.updateBlog(
 			req.params.id,
 			req.body.name,
 			req.body.youtubeUrl,

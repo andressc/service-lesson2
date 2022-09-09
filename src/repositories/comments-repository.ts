@@ -1,31 +1,24 @@
-import { commentsCollection } from '../db/db';
+import {commentsCollection} from '../db/db';
 import { CommentsType } from '../types/commentsType';
+import {PaginationCalc, PaginationType} from "../types/paginationType";
 
 export const commentsRepository = {
-	/*async findAllComments(
-		query: PaginationTypeQuery,
-		id: string | null,
-	): Promise<PaginationType<CommentsType[]>> {
-		const searchString = id ? { postId: id } : {};
-
-		const totalCount = await commentsCollection.countDocuments(searchString);
-
-		const { pagesCount, page, pageSize, skip } = paginationCalc({ ...query, totalCount });
-
+	async findAllComments(data: PaginationCalc, searchString: {}): Promise<PaginationType<CommentsType[]>> {
 		const items: CommentsType[] = await commentsCollection
 			.find(searchString, { projection: { _id: 0, postId: 0 } })
-			.skip(skip)
-			.limit(pageSize)
+			.skip(data.skip)
+			.limit(data.pageSize)
+			.sort(data.sortBy)
 			.toArray();
 
 		return {
-			pagesCount,
-			page,
-			pageSize,
-			totalCount,
+			pagesCount: data.pagesCount,
+			page: data.pageNumber,
+			pageSize: data.pageSize,
+			totalCount: data.totalCount,
 			items,
 		};
-	},*/
+	},
 
 	async findCommentById(id: string): Promise<CommentsType | null> {
 		const comment: CommentsType | null = await commentsCollection.findOne(
@@ -53,9 +46,9 @@ export const commentsRepository = {
 	async createComment(newComment: CommentsType): Promise<CommentsType | null> {
 		await commentsCollection.insertOne({ ...newComment });
 
-		const { id, content, userId, userLogin, addedAt } = newComment;
+		const { id, content, userId, userLogin, createdAt } = newComment;
 
-		return { id, content, userId, userLogin, addedAt };
+		return { id, content, userId, userLogin, createdAt };
 	},
 
 	async countCommentsData(search: {}): Promise<number> {

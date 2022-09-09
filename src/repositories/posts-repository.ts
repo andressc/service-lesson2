@@ -5,7 +5,7 @@ import { postsCollection } from '../db/db';
 export const postsRepository = {
 	async findAllPosts(data: PaginationCalc, searchString: {}): Promise<PaginationType<PostsType[]>> {
 		const items: PostsType[] = await postsCollection
-			.find(searchString, { projection: { _id: 0, passwordHash: 0 } })
+			.find(searchString, { projection: { _id: 0 } })
 			.skip(data.skip)
 			.limit(data.pageSize)
 			.sort(data.sortBy)

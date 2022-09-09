@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { bloggersRouter } from './routes/bloggers-router';
+import { blogsRouter } from './routes/blogs-router';
 import { postsRouter } from './routes/posts-router';
 import { runDb } from './db/db';
 import { config } from 'dotenv';
@@ -20,7 +20,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/bloggers', bloggersRouter);
+app.use('/blogs', blogsRouter);
 app.use('/posts', postsRouter);
 app.use('/users', usersRouter);
 app.use('/testing', testingRouter);
