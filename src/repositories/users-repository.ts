@@ -1,4 +1,4 @@
-import {usersCollection, usersCollection2} from '../db/db';
+import { usersCollection, usersCollection2 } from '../db/db';
 import { PaginationCalc, PaginationType } from '../types/paginationType';
 import { UsersType } from '../types/usersType';
 

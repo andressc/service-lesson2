@@ -1,9 +1,12 @@
-import {commentsCollection} from '../db/db';
+import { commentsCollection } from '../db/db';
 import { CommentsType } from '../types/commentsType';
-import {PaginationCalc, PaginationType} from "../types/paginationType";
+import { PaginationCalc, PaginationType } from '../types/paginationType';
 
 export const commentsRepository = {
-	async findAllComments(data: PaginationCalc, searchString: {}): Promise<PaginationType<CommentsType[]>> {
+	async findAllComments(
+		data: PaginationCalc,
+		searchString: {},
+	): Promise<PaginationType<CommentsType[]>> {
 		const items: CommentsType[] = await commentsCollection
 			.find(searchString, { projection: { _id: 0, postId: 0 } })
 			.skip(data.skip)

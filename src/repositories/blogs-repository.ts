@@ -3,10 +3,7 @@ import { BlogsType } from '../types/blogsType';
 import { PaginationCalc, PaginationType } from '../types/paginationType';
 
 export const blogsRepository = {
-	async findAllBlogs(
-		data: PaginationCalc,
-		searchString: {},
-	): Promise<PaginationType<BlogsType[]>> {
+	async findAllBlogs(data: PaginationCalc, searchString: {}): Promise<PaginationType<BlogsType[]>> {
 		const items: BlogsType[] = await blogsCollection
 			.find(searchString, { projection: { _id: 0 } })
 			.skip(data.skip)

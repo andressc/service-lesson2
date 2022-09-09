@@ -28,8 +28,12 @@ export const postsService = {
 		query: PaginationTypeQuery,
 		id: string,
 	): Promise<PaginationType<CommentsType[]> | boolean> {
+		const post = await postsService.findPostById(id);
+		if (!post) {
+			return false;
+		}
 
-		const searchString = { postId: id }
+		const searchString = { postId: id };
 
 		const totalCount = await commentsRepository.countCommentsData(searchString);
 

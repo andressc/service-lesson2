@@ -1,7 +1,7 @@
 import { PaginationTypeQuery } from '../types/paginationType';
 
 export const paginationCalc = (data: PaginationTypeQuery) => {
-	const sortDirection = data.sortDirection === 'Asc' ? 1 : -1;
+	const sortDirection = data.sortDirection === 'asc' ? 1 : -1;
 	const sortBy = data.sortBy ? { [data.sortBy]: sortDirection } : { createdAt: sortDirection };
 
 	let pageNumber = +data.pageNumber;

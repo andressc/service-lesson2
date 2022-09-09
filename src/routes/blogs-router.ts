@@ -28,12 +28,12 @@ blogsRouter.get('/:id', async (req: Request, res: Response) => {
 blogsRouter.get(
 	'/:id/posts',
 	async (req: Request<{ id: string }, {}, {}, PaginationTypeQuery>, res: Response) => {
-		const blogPosts: PaginationType<PostsType[]> = await blogsService.findAllPostsBlog(
+		const blogPosts: PaginationType<PostsType[]> | boolean = await blogsService.findAllPostsBlog(
 			req.query,
 			req.params.id,
 		);
 
-		if (blogPosts.totalCount > 0) {
+		if (blogPosts) {
 			return res.send(blogPosts);
 		}
 
@@ -60,10 +60,7 @@ blogsRouter.post(
 	...blogsValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const blog: BlogsType = await blogsService.createBlog(
-			req.body.name,
-			req.body.youtubeUrl,
-		);
+		const blog: BlogsType = await blogsService.createBlog(req.body.name, req.body.youtubeUrl);
 
 		if (blog) {
 			return res.status(201).send(blog);
@@ -79,10 +76,7 @@ blogsRouter.post(
 	...postsValidationMiddleware,
 	errorValidationMiddleware,
 	async (req: Request, res: Response) => {
-		const blogsPost: PostsType | null = await blogsService.createBlogPost(
-			req.params.id,
-			req.body,
-		);
+		const blogsPost: PostsType | null = await blogsService.createBlogPost(req.params.id, req.body);
 
 		if (blogsPost) {
 			return res.status(201).send(blogsPost);

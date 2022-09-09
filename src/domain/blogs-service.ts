@@ -23,8 +23,13 @@ export const blogsService = {
 
 	async findAllPostsBlog(
 		query: PaginationTypeQuery,
-		id: string | null = null,
-	): Promise<PaginationType<PostsType[]>> {
+		id: string,
+	): Promise<PaginationType<PostsType[]> | boolean> {
+		const blog = await blogsService.findBlogById(id);
+		if (!blog) {
+			return false;
+		}
+
 		return postsService.findAllPosts(query, id);
 	},
 
@@ -43,7 +48,7 @@ export const blogsService = {
 	async createBlog(name: string, youtubeUrl: string): Promise<BlogsType> {
 		const newBlog = { id: idCreator(), name, youtubeUrl, createdAt: new Date().toISOString() };
 
-		 return await blogsRepository.createBlog(newBlog);
+		return await blogsRepository.createBlog(newBlog);
 	},
 
 	async createBlogPost(id: string, body: PostsType): Promise<PostsType | null> {

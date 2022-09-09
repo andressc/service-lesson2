@@ -3,11 +3,11 @@ import { errorValidationMiddleware } from '../middlewares/error-validation-middl
 import { postsValidationMiddleware } from '../middlewares/posts-validation-middleware';
 import { basicAuthorizationValidationMiddleware } from '../middlewares/basic-authorization-validation-middleware';
 import { postsService } from '../domain/posts-service';
-import {PaginationType, PaginationTypeQuery} from '../types/paginationType';
+import { PaginationType, PaginationTypeQuery } from '../types/paginationType';
 import { blogsIdValidationMiddleware } from '../middlewares/blogs-id-validation-middleware';
 import { bearerAuthorizationValidationMiddleware } from '../middlewares/bearer-authorization-validation-middleware';
 import { commentsValidationMiddleware } from '../middlewares/comments-validation-middleware';
-import {CommentsType} from "../types/commentsType";
+import { CommentsType } from '../types/commentsType';
 
 export const postsRouter = Router({});
 
